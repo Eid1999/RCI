@@ -7,8 +7,9 @@
 #include <sys/socket.h>
 #include <stdio.h>
 #include "Anel.h"
+#include <stdlib.h>
 
-void bentry(char* chave, char* porto,char* ip){
+void bentry(int  chave, char* porto,char* ip){
        
        struct addrinfo hints,*res;
        int fd,errcode;
@@ -33,7 +34,6 @@ void bentry(char* chave, char* porto,char* ip){
        if(n==-1)/*error*/exit(1);
        buffer[n] = '\0';
        printf("echo: %s\n", buffer);
-       
        
        close(fd);
        freeaddrinfo(res);
