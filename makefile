@@ -12,7 +12,7 @@ all:$(TARGET)
 $(TARGET):$(OBJFILES)
 	$(CC) $(CFLAGS) -o $@ $^
 
-%.o: %.c newAnel.h
+%.o: %.c Anel.h
 	$(CC) $(CFLAGS) -c $<
 clean:
 	rm -f $(TARGET) $(OBJFILES)
