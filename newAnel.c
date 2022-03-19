@@ -12,58 +12,59 @@
 #include "Anel.h"
 #include <arpa/inet.h>
 void newAnel(char* chave,char* porto){	
-	struct addrinfo hints,*res;
-
-	int tcp,newtcp,errcode,udp;
-	ssize_t n,nw, nread;
-	struct sockaddr addr; 	socklen_t addrlen;
-	char *ptr,buffer[128];
-	
-	//TCP socket
-	tcp=socket(AF_INET,SOCK_STREAM,0);
-	if(tcp==-1)exit(1);//error
-	
-	memset(&hints,0,sizeof hints);
-	hints.ai_family=AF_INET;//IPv4
-	hints.ai_socktype=SOCK_STREAM;
-	hints.ai_flags=AI_PASSIVE;
-	if((errcode=getaddrinfo(NULL,porto,&hints,&res))!=0)/*error*/exit(1);
-	
-	if(bind(tcp,res->ai_addr,res->ai_addrlen)==-1)/*error*/exit(1);
-	if(listen(tcp,5)==-1)/*error*/exit(1);
-	
-	freeaddrinfo(res);
-	//UDP socket
-	if((udp=socket(AF_INET,SOCK_DGRAM,0))==-1)exit(1);//error
-	
-
-       hints.ai_socktype=SOCK_DGRAM;//UDP socket
- 
-       if((errcode=getaddrinfo(NULL,porto,&hints,&res))!=0)/*error*/exit(1);
+	struct addrinfo hints_udp,*res_udp;
+       int udp,errcode;
+       struct sockaddr addr;
+       socklen_t addrlen;
+       ssize_t n,nread;
+       char buffer[128];
+       if((udp=socket(AF_INET,SOCK_DGRAM,0))==-1)exit(1);//error
+       memset(&hints_udp,0,sizeof hints_udp);
+       hints_udp.ai_family=AF_INET;//IPv4
+       hints_udp.ai_socktype=SOCK_DGRAM;//UDP socket
+       hints_udp.ai_flags=AI_PASSIVE;
+       if((errcode=getaddrinfo(NULL,porto,&hints_udp,&res_udp))!=0)/*error*/exit(1);
+       if(bind(udp,res_udp->ai_addr,res_udp->ai_addrlen)==-1)/*error*/exit(1);
        
-       if(bind(udp,res->ai_addr,res->ai_addrlen)==-1)/*error*/exit(1);
-  
-       freeaddrinfo(res);
-
-	
-	while(1)
-	{
-		addrlen=sizeof(addr);
-		if((newtcp=accept(tcp,&addr,&addrlen))==-1)/*error*/exit(1);
-		while((n=read(newtcp,buffer,128))!=0){
-			if(n==-1)/*error*/exit(1);
-			ptr=&buffer[0];
-		while(n>0){if((nw=write(newtcp,ptr,n))<=0)/*error*/exit(1);
-			n-=nw; ptr+=nw;}
-		}
-		nread=recvfrom(udp,buffer,128,0, &addr,&addrlen);
+       
+       
+       
+       struct addrinfo hints,*res;
+       int fd,newfd;       
+       ssize_t i,nw;
+       char *ptr;
+       
+       if((fd=socket(AF_INET,SOCK_STREAM,0))==-1)exit(1);//error
+       memset(&hints,0,sizeof hints);
+       hints.ai_family=AF_INET;//IPv4
+       hints.ai_socktype=SOCK_STREAM;//TCP socket
+       hints.ai_flags=AI_PASSIVE;
+       if((errcode=getaddrinfo(NULL,porto,&hints,&res))!=0)/*error*/exit(1);
+       if(bind(fd,res->ai_addr,res->ai_addrlen)==-1)/*error*/exit(1);
+       if(listen(fd,5)==-1)/*error*/exit(1);
+       
+       
+       
+       
+       
+       
+       while(1){addrlen=sizeof(addr);
+              nread=recvfrom(udp,buffer,128,0, &addr,&addrlen);
+              
               if(nread==-1)/*error*/exit(1);
               n=sendto(udp,buffer,nread,0,&addr,addrlen);
               if(n==-1)/*error*/exit(1);
-
-	       close(newtcp);
-	}
-	//freeaddrinfo(res);close(fd);exit(0);
-	return;
+              
+              
+              if((newfd=accept(fd,&addr,&addrlen))==-1)
+              /*error*/exit(1);
+               while((i=read(newfd,buffer,128))!=0){if(i==-1)/*error*/exit(1);
+                     ptr=&buffer[0];
+                     while(i>0){if((nw=write(newfd,ptr,i))<=0)/*error*/exit(1);
+                            i-=nw; ptr+=nw;}
+                    }
+              close(newfd);
+              }
+              
 
 }

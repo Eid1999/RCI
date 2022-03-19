@@ -26,10 +26,13 @@ int main (int argc,char *argv[]){
 		scanf(" %19s", opt);
 			if (strcmp(opt,"new")==0){
 				newAnel(chave,porto);
-				}
+			}
 			else if(strcmp(opt,"bentry")==0) {
 				bentry(chave,porto,ip);
-		}
+		       }
+		       else if(strcmp(opt,"pentry")==0) {
+				pentry(porto,ip);
+			}
 	 }while(strcmp(opt,"exit")!=0);
 	return 0;
 }
