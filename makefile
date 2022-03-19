@@ -4,13 +4,16 @@ CC = gcc
 CFLAGS = -g  -Wall
 LDFLAGS =
 SOURCES=newAnel.c ring.c
-OBJFILES = ring.o
-OUTPUT = ring
+OBJFILES = ring.o newAnel.o
+TARGET = ring
 
-$(OUTPUT): $(OBJFILES)
-	$(CC)  $(CFLAGS) $(SOURCES)   -o $(OUTPUT) $(LDFLAGS)
-	
+all:$(TARGET)
+
+$(TARGET):$(OBJFILES)
+	$(CC) $(CFLAGS) -o $@ $^
+
+%.o: %.c newAnel.h
+	$(CC) $(CFLAGS) -c $<
 clean:
-	rm -f $(OBJFILES) $(TARGET) *~
-
-
+	rm -f $(TARGET) $(OBJFILES)
+	

@@ -12,14 +12,14 @@ int connect(int sockfd,const struct sockaddr *serv_addr,
 socklen_t addrlen);
 int main (int argc,char *argv[])
 {
-	char chave[20];
-    	char ip[20];
-   	 char porto[20];
+	char *chave;;
+    	char *ip;
+   	char *porto;
    	 char opt[20];
 
-    	strcpy(chave, argv[1]);
-    	strcpy(ip, argv[2]);
-    	strcpy(porto, argv[3]);
+    	chave= argv[1];
+    	ip= argv[2];
+    	porto= argv[3];
 	do{
 		printf("new \nbentry \npentry \nchord \nshow \nfind \nleave \nexit \nChoose option:");
 		scanf(" %19s", opt);
