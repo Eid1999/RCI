@@ -9,15 +9,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include "newAnel.h"
-void newAnel(char *chave, char *port, char *IP ){
-	nt connect(int sockfd,const struct sockaddr *serv_addr,
-socklen_t addrlen);
-
-
-int main(void)
-{
-	
-
+void newAnel(char *chave, char *porto, char *IP ){	
+	printf("\n\n\nChave:%s, IP:%s, Port:%s\n\n\n\n", chave, IP, porto);
 
 	return;
 }

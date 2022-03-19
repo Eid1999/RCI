@@ -12,18 +12,23 @@ int connect(int sockfd,const struct sockaddr *serv_addr,
 socklen_t addrlen);
 int main (int argc,char *argv[])
 {
-	char opt[20];
-	char a[20];
+	char chave[20];
+    	char ip[20];
+   	 char porto[20];
+   	 char opt[20];
+
+    	strcpy(chave, argv[1]);
+    	strcpy(ip, argv[2]);
+    	strcpy(porto, argv[3]);
 	do{
-	printf("new \nbentry \npentry \nchord \nshow \nfind \nleave \nexit \nChoose option:");
-	scanf(" %19s", opt);
-		if (strcmp(opt,"new")==0){
-			strcpy(a,newAnel("va", "se", "fuder" ));
-			printf("%s",a);
-			}
-		else if(strcmp(opt,"bentry")==0) {
-			exit(3);
+		printf("new \nbentry \npentry \nchord \nshow \nfind \nleave \nexit \nChoose option:");
+		scanf(" %19s", opt);
+			if (strcmp(opt,"new")==0){
+				newAnel(chave, porto, ip );
+				}
+			else if(strcmp(opt,"exi")==0) {
+				exit(3);
 		}
-	 }while(strcmp(opt,"new")==0);
+	 }while(strcmp(opt,"exit")!=0);
 	return 0;
 }
