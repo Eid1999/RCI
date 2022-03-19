@@ -1,4 +1,4 @@
-#include "newAnel.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+
 #include "Anel.h"
 #include <arpa/inet.h>
 void newAnel(char* chave,char* porto){	
@@ -29,12 +30,10 @@ void newAnel(char* chave,char* porto){
 	
 	
 	
-	
-	
-	
-	
+
 	if(bind(fd,res->ai_addr,res->ai_addrlen)==-1)/*error*/exit(1);
 	if(listen(fd,5)==-1)/*error*/exit(1);
+	freeaddrinfo(res);
 	
 	while(1)
 	{

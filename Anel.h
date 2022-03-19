@@ -1,6 +1,6 @@
-#ifndef NEWANEL_DOT_H
-#define NEWANEL_DOT_H  
+#ifndef ANEL_DOT_H
+#define ANEL_DOT_H  
 
 void newAnel(char* chave,char* porto);
 
-#endif /* NEWANEL_DOT_H */
+#endif /* ANEL_DOT_H */
