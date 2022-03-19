@@ -1,12 +1,16 @@
 # makefile
 
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -g  -Wall
 LDFLAGS =
-OBJFILES = ring.o newAnel.o
-TARGET = ring
-all: $(TARGET)
-$(TARGET): $(OBJFILES)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES) $(LDFLAGS)
+SOURCES=newAnel.c ring.c
+OBJFILES = ring.o
+OUTPUT = ring
+
+$(OUTPUT): $(OBJFILES)
+	$(CC)  $(CFLAGS) $(SOURCES)   -o $(OUTPUT) $(LDFLAGS)
+	
 clean:
 	rm -f $(OBJFILES) $(TARGET) *~
+
+
