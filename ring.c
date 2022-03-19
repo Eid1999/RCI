@@ -24,7 +24,7 @@ int main (int argc,char *argv[])
 		printf("new \nbentry \npentry \nchord \nshow \nfind \nleave \nexit \nChoose option:");
 		scanf(" %19s", opt);
 			if (strcmp(opt,"new")==0){
-				newAnel(chave, porto, ip );
+				newAnel(chave,porto);
 				}
 			else if(strcmp(opt,"exi")==0) {
 				exit(3);
