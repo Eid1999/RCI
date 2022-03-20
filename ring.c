@@ -18,8 +18,8 @@ socklen_t addrlen);
 int main (int argc,char *argv[]){
 
        char *c;
-       int chave,j=0;
-   	 char *opt, porto[20],ip[20];
+       int j=0;
+   	 char *opt, str[20];
    	 anel i,p;
    	
 
@@ -32,20 +32,17 @@ int main (int argc,char *argv[]){
     	
 	do{
 		printf("\nInterface escreva comando:");
-/*		scanf(" %19s ",opt );*/
-/*		if(scanf(“%[^\n]”, st)!=1);{*/
-/*		scanf(" %d  " ,&chave );*/
-/*		scanf(" %19s " ,ip  );*/
-/*		scanf(" %19s " ,porto  );}*/
 
-              fgets(porto, 20, stdin);
-              c = strtok(porto, " ");
+              fgets(str, 20, stdin);
+              c = strtok(str, " ");
               while (c != NULL)
               {
+                     c[strcspn(c, "\n")] = 0;
                      switch(j) {
-
+                            
                            case 0 :
                                   opt=c;
+                                 
                                   break; 
 	                     
                             case 1  :
@@ -57,14 +54,14 @@ int main (int argc,char *argv[]){
                             case 3  :
                                   p.porto=c;
                                   break; 
+
                         }
                      c = strtok (NULL, " ");
                      j++;
                }
 		
-/*		p.porto=porto;*/
-/*		p.chave=chave;*/
-/*		p.ip=ip;*/
+
+
 		if (strcmp(opt,"new")==0){
 				newAnel(i);
 			}
