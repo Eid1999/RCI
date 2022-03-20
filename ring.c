@@ -7,10 +7,14 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-
 #include "Anel.h"
 int connect(int sockfd,const struct sockaddr *serv_addr,
 socklen_t addrlen);
+
+
+
+
+
 int main (int argc,char *argv[]){
 
 	char *c;
@@ -18,11 +22,16 @@ int main (int argc,char *argv[]){
    	char *porto;
    	 char opt[20];
    	 int chave;
+   	 anel i;
 
     	c= argv[1];
     	sscanf(c, "%d", &chave);
     	ip= argv[2];
     	porto= argv[3];
+    	
+    	i.chave=chave;
+    	i.ip=ip;
+    	i.porto=porto;
     	
     	
 	do{
@@ -30,13 +39,13 @@ int main (int argc,char *argv[]){
 		scanf(" %19s", opt);
 			if (strcmp(opt,"new")==0){
 			        int chave=1;
-				newAnel(chave,porto);
+				newAnel(i);
 			}
 			else if(strcmp(opt,"bentry")==0) {
-				bentry(chave,porto,ip);
+				bentry(i);
 		       }
 		       else if(strcmp(opt,"pentry")==0) {
-				pentry(chave,porto,ip);
+				pentry(i);
 			}
 	 }while(strcmp(opt,"exit")!=0);
 	return 0;

@@ -9,7 +9,7 @@
 #include "Anel.h"
 #include<stdlib.h>
 
-void pentry(int chave,char *porto, char *ip){
+void pentry(anel i){
        int fd,n;
        ssize_t nbytes,nleft,nwritten,nread;
        char *ptr,buffer[128+1];
@@ -22,7 +22,7 @@ void pentry(int chave,char *porto, char *ip){
        hints.ai_family=AF_INET;//IPv4
        hints.ai_socktype=SOCK_STREAM;//TCP socket
        
-       n=getaddrinfo(ip,porto,&hints,&res);
+       n=getaddrinfo(i.ip,i.porto,&hints,&res);
        if(n!=0)/*error*/exit(1);
        if(n!=0)/*error*/exit(1);
        n=connect(fd,res->ai_addr,res->ai_addrlen);
