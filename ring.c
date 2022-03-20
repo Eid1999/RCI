@@ -17,28 +17,55 @@ socklen_t addrlen);
 
 int main (int argc,char *argv[]){
 
-	char *c;
-    	char *ip;
-   	char *porto;
-   	 char opt[20];
-   	 int chave;
-   	 anel i;
+       char *c;
+       int chave,j=0;
+   	 char *opt, porto[20],ip[20];
+   	 anel i,p;
+   	
 
     	c= argv[1];
-    	sscanf(c, "%d", &chave);
-    	ip= argv[2];
-    	porto= argv[3];
+    	sscanf(c, "%d", &i.chave);
+    	i.ip= argv[2];
+       i.porto= argv[3];
     	
-    	i.chave=chave;
-    	i.ip=ip;
-    	i.porto=porto;
     	
     	
 	do{
-		printf("new \nbentry \npentry \nchord \nshow \nfind \nleave \nexit \nChoose option:");
-		scanf(" %19s", opt);
-			if (strcmp(opt,"new")==0){
-			        int chave=1;
+		printf("\nInterface escreva comando:");
+/*		scanf(" %19s ",opt );*/
+/*		if(scanf(“%[^\n]”, st)!=1);{*/
+/*		scanf(" %d  " ,&chave );*/
+/*		scanf(" %19s " ,ip  );*/
+/*		scanf(" %19s " ,porto  );}*/
+
+              fgets(porto, 20, stdin);
+              c = strtok(porto, " ");
+              while (c != NULL)
+              {
+                     switch(j) {
+
+                           case 0 :
+                                  opt=c;
+                                  break; 
+	                     
+                            case 1  :
+                                  sscanf(c, "%d", &p.chave);
+                                  break; 
+                            case 2  :
+                                  p.ip=c;
+                                  break; 
+                            case 3  :
+                                  p.porto=c;
+                                  break; 
+                        }
+                     c = strtok (NULL, " ");
+                     j++;
+               }
+		
+/*		p.porto=porto;*/
+/*		p.chave=chave;*/
+/*		p.ip=ip;*/
+		if (strcmp(opt,"new")==0){
 				newAnel(i);
 			}
 			else if(strcmp(opt,"bentry")==0) {
