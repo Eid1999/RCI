@@ -50,29 +50,29 @@ void newAnel(anel i){
        
 
        if(fork()==0){
-       while(1)
-       {      
-              if(fork()==0){
-              addrlen_udp=sizeof(addr_udp);
-              nread=recvfrom(udp,buffer,128,0, &addr_udp,&addrlen_udp);
-              if(nread==-1)/*error*/exit(1);
-              n=sendto(udp,buffer,nread,0,&addr_udp,addrlen_udp);
-              if(n==-1)/*error*/exit(1);
-              }
-              else{
-                     addrlen_tcp=sizeof(addr_tcp);
-                     if((newfd=accept(fd,&addr_tcp,&addrlen_tcp))==-1)
-                     /*error*/exit(1);
-                      while((j=read(newfd,buffer,128))!=0){if(j==-1)/*error*/exit(1);
-                            ptr=&buffer[0];
-                            while(j>0){if((nw=write(newfd,ptr,j))<=0)/*error*/exit(1);
-                                   j-=nw; ptr+=nw;}
+              while(1)
+              {      
+                     if(fork()==0){
+                            addrlen_udp=sizeof(addr_udp);
+                            nread=recvfrom(udp,buffer,128,0, &addr_udp,&addrlen_udp);
+                            if(nread==-1)/*error*/exit(1);
+                            n=sendto(udp,buffer,nread,0,&addr_udp,addrlen_udp);
+                            if(n==-1)/*error*/exit(1);
                      }
-                     close(newfd);
+                     else{
+                            addrlen_tcp=sizeof(addr_tcp);
+                            if((newfd=accept(fd,&addr_tcp,&addrlen_tcp))==-1)
+                                   /*error*/exit(1);
+                                    while((j=read(newfd,buffer,128))!=0){if(j==-1)/*error*/exit(1);
+                                          ptr=&buffer[0];
+                                          while(j>0){if((nw=write(newfd,ptr,j))<=0)/*error*/exit(1);
+                                                 j-=nw; ptr+=nw;}
+                                   }
+                            close(newfd);
                      }             
-              
+
               }
-              }
+       }
               else{return;}    
 
 }

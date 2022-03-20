@@ -7,7 +7,7 @@ typedef struct _anel {
     char *ip,*porto ;
 }anel;
 void newAnel(anel i);
-void bentry(anel i);
-void pentry(anel i);
+void bentry(anel i, anel p);
+void pentry(anel i, anel p);
 
 #endif /* ANEL_DOT_H */

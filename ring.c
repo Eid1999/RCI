@@ -19,7 +19,7 @@ int main (int argc,char *argv[]){
 
        char *c;
        int j=0;
-   	 char *opt, str[20];
+   	 char *opt, str[50];
    	 anel i,p;
    	
 
@@ -33,7 +33,7 @@ int main (int argc,char *argv[]){
 	do{
 		printf("\nInterface escreva comando:");
 
-              fgets(str, 20, stdin);
+              fgets(str, 50, stdin);
               c = strtok(str, " ");
               while (c != NULL)
               {
@@ -66,10 +66,10 @@ int main (int argc,char *argv[]){
 				newAnel(i);
 			}
 			else if(strcmp(opt,"bentry")==0) {
-				bentry(i);
+				bentry(i,p);
 		       }
 		       else if(strcmp(opt,"pentry")==0) {
-				pentry(i);
+				pentry(i,p);
 			}
 	 }while(strcmp(opt,"exit")!=0);
 	return 0;

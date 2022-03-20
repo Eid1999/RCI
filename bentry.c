@@ -9,7 +9,7 @@
 #include "Anel.h"
 #include <stdlib.h>
 
-void bentry(anel i){
+void bentry(anel i, anel p){
        
        struct addrinfo hints,*res;
        int fd,errcode;
@@ -24,7 +24,7 @@ void bentry(anel i){
        memset(&hints,0,sizeof hints);
        hints.ai_family=AF_INET;//IPv4
        hints.ai_socktype=SOCK_DGRAM;
-       errcode=getaddrinfo(i.ip,i.porto,&hints,&res);
+       errcode=getaddrinfo(p.ip,p.porto,&hints,&res);
        if(errcode!=0)/*error*/exit(1);
        n=sendto(fd,"Hello!\n",7,0,res->ai_addr,res->ai_addrlen);
        if(n==-1)/*error*/exit(1);
@@ -37,5 +37,5 @@ void bentry(anel i){
        
        close(fd);
        freeaddrinfo(res);
-       exit(0);
+       return;
 }
