@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -5,16 +7,16 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <stdio.h>
+#include <signal.h>
+#include <arpa/inet.h>
 #include "Anel.h"
-#include<stdlib.h>
 
-void pentry(anel i, anel p){
-       int fd,n;
-       ssize_t nbytes,nleft,nwritten,nread;
-       char *ptr,buffer[128+1];
+anel pentry(anel i)
+{
+        int fd,n;
+       ssize_t nwritten;
+       char ptr[100];
        struct addrinfo hints,*res;
-       
        fd=socket(AF_INET,SOCK_STREAM,0);//TCP socket
        if(fd==-1)exit(1);//error   
 
@@ -22,31 +24,22 @@ void pentry(anel i, anel p){
        hints.ai_family=AF_INET;//IPv4
        hints.ai_socktype=SOCK_STREAM;//TCP socket
        
-       n=getaddrinfo(p.ip,p.porto,&hints,&res);
+       n=getaddrinfo(i.prec.ip,i.prec.porto,&hints,&res);
        if(n!=0)/*error*/exit(1);
        if(n!=0)/*error*/exit(1);
        n=connect(fd,res->ai_addr,res->ai_addrlen);
        if(n==-1)/*error*/exit(1);
        
-       ptr=strcpy(buffer,"Hello!\n");
-       nbytes=7;
-       nleft=nbytes;
+       snprintf(ptr,100,"SELF %d %s %s\n",i.eu.chave,i.eu.ip,i.eu.porto);
        
-       while(nleft>0){nwritten=write(fd,ptr,nleft);
-              if(nwritten<=0)/*error*/exit(1);
-              nleft-=nwritten;
-              ptr+=nwritten;}
+       
+       nwritten=write(fd,ptr,sizeof(ptr));
+       if(nwritten<=0)/*error*/exit(1);
+              
           
-       nleft=nbytes; ptr=buffer;
-       while(nleft>0){nread=read(fd,ptr,nleft);   
-              if(nread==-1)/*error*/exit(1);
-              else if(nread==0)break;//closed by peer
-              nleft-=nread;
-              ptr+=nread;}
-       nread=nbytes-nleft;
-       buffer[nread] = '\0';
-       printf("echo: %s\n", buffer);
+       
        close(fd);
-       return ;
+       return i ;
 }
    
+

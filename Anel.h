@@ -2,12 +2,21 @@
 #define ANEL_DOT_H  
 
 
-typedef struct _anel {
+typedef struct _no {
     int chave;
-    char *ip,*porto ;
+    char  *ip, *porto ;
+}no;
+
+typedef struct _anel {
+    no eu;
+    no next;
+    no prec ;
+    no atalho;
 }anel;
-void newAnel(anel i);
-void bentry(anel i, anel p);
-void pentry(anel i, anel p);
+
+
+
+anel interface(anel i);
+anel pentry(anel i);
 
 #endif /* ANEL_DOT_H */

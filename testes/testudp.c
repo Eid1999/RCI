@@ -9,13 +9,17 @@
 #include "Anel.h"
 #include <stdlib.h>
 
-void bentry(anel i, anel p){
+int main (int argc,char *argv[]){
        
        struct addrinfo hints,*res;
        int fd,errcode;
        ssize_t n;
        struct sockaddr addr;
        socklen_t addrlen;
+       char *ip, *porto;
+       
+    	ip= argv[2];
+       porto= argv[3];
 
        char buffer[128+1];
 
@@ -24,7 +28,7 @@ void bentry(anel i, anel p){
        memset(&hints,0,sizeof hints);
        hints.ai_family=AF_INET;//IPv4
        hints.ai_socktype=SOCK_DGRAM;
-       errcode=getaddrinfo(p.ip,p.porto,&hints,&res);
+       errcode=getaddrinfo(ip,porto,&hints,&res);
        if(errcode!=0)/*error*/exit(1);
        n=sendto(fd,"Hello!\n",7,0,res->ai_addr,res->ai_addrlen);
        if(n==-1)/*error*/exit(1);
@@ -37,5 +41,5 @@ void bentry(anel i, anel p){
        
        close(fd);
        freeaddrinfo(res);
-       return;
+       exit(0);
 }
