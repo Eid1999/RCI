@@ -1,14 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <signal.h>
-#include <arpa/inet.h>
+
 #include "Anel.h"
 
 anel pentry(anel i)

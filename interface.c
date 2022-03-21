@@ -17,13 +17,15 @@ socklen_t addrlen);
 
 anel interface (anel i){
 
+
        char *c;
        int j=0;
    	 char *opt, str[50];
    	 no p;
     	
-		printf("\nInterface escreva comando:");
-
+		printf("\nInterface do usuario, escreva o comando:\n");
+              p.porto= (char*) malloc(50);
+              p.ip= (char*) malloc(50);
               fgets(str, 50, stdin);
               c = strtok(str, " ");
               while (c != NULL)
@@ -61,12 +63,25 @@ anel interface (anel i){
 			       printf("new");
 		       }
 		       else if(strcmp(opt,"pentry")==0) {
-		              i.prec.ip=p.ip;
-		              i.prec.porto=p.porto;
+		               i.prec.porto= (char*) malloc(50);
+		                i.prec.ip= (char*) malloc(50);
+		              i.prec.chave=p.chave;
+		              memcpy(i.prec.ip,p.ip,50);
+		              memcpy(i.prec.porto,p.porto,50);
 		              i=pentry(i);
 			}
-			
+			else if(strcmp(opt,"show")==0) {
+			       printf("\nINFORMAÇÃO PROPRIA: %d %s %s \n", i.eu.chave,i.eu.ip,i.eu.porto );
+			       if(i.next.ip!=NULL)printf("\n INFORMAÇÃO SUCESSOR: %d %s %s \n",i.next.chave,i.next.ip,i.next.porto);
+			       if(i.prec.ip!=NULL)printf("\n INFORMAÇÃO PRECESSOR: %d %s %s\n",i.prec.chave,i.prec.ip,i.prec.porto);
+			       if(i.atalho.ip!=NULL)printf("\n INFORMAÇÃO ATALHO: %d %s %s \n",i.atalho.chave,i.atalho.ip,i.atalho.porto);
+			}
+		       else if(strcmp(opt,"exit")==0){
+		       if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);}
+		       exit(0);
+		       }
 	       else{ printf("Comando invalido");}
+	       
 	return i;
 }
 
