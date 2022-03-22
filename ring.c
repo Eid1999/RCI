@@ -116,7 +116,7 @@ int main(int argc,char* argv[])
                      if(j==-1)/*error*/exit(2);
                      printf("%s",buffer);
                      close(newfd);
-                     sub_tcp(i,buffer);
+                     i=sub_tcp(i,buffer);
                }
                // if udp socket is readable receive the message.
                if (FD_ISSET(fdUDP, &rset)) {

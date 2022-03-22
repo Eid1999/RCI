@@ -3,8 +3,8 @@
 CC = gcc
 CFLAGS = -g  -Wall
 LDFLAGS =
-SOURCES=ring.c interface.c pentry.c sub_tcp.c
-OBJFILES = ring.o interface.o pentry.o sub_tcp.o
+SOURCES=ring.c interface.c mensagem_tcp.c sub_tcp.c
+OBJFILES = ring.o interface.o mensagem_tcp.o sub_tcp.o
 TARGET = ring
 
 all:$(TARGET)

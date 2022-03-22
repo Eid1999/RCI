@@ -29,6 +29,6 @@ typedef struct _anel {
 
 anel sub_tcp(anel i, char buffer[]);
 anel interface(anel i);
-anel pentry(anel i);
+void mensagem_tcp(char *opt, no dest, no envio);
 
 #endif /* ANEL_DOT_H */
