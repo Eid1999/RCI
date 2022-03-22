@@ -67,7 +67,7 @@ anel sub_tcp(anel i, char buffer[])
 
                      else{
                             opt="PRED";
-		              mensagem_tcp(opt,i.next,p,24);
+		              if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))mensagem_tcp(opt,i.next,p,24);
 		               memcpy(i.next.ip,p.ip,50);
 		               memcpy(i.next.porto,p.porto,50);
 		               i.next.chave=p.chave;

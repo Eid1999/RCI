@@ -17,7 +17,6 @@ void mensagem_tcp(char *opt,no dest,no envio,int nbits)
        
        n=getaddrinfo(dest.ip,dest.porto,&hints,&res);
        if(n!=0)/*error*/exit(1);
-       if(n!=0)/*error*/exit(1);
        n=connect(fd,res->ai_addr,res->ai_addrlen);
        if(n==-1)/*error*/exit(1);
        if(nbits==24)snprintf(ptr,nbits,"%s %d %s %s\n",opt,envio.chave,envio.ip,envio.porto);

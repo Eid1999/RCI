@@ -16,6 +16,7 @@
 #include "Anel.h"
 #define STDIN 0
 #define MAXLINE 1024
+#define mod 15
 
 int max(int x, int y)
 {
@@ -24,9 +25,17 @@ int max(int x, int y)
     else
         return y;
 }
+
+
+int d(int d1,int d2){
+       int c;
+       c=d2-d1;
+       while(c<-1)c=c+mod;
+       return c;
+}
+
 int main(int argc,char* argv[])
 {
-       struct sigaction act;
        struct addrinfo hints,*res;
 	struct addrinfo hints_udp,*res_udp;
        int fdUDP,errcode,nready;
@@ -35,9 +44,9 @@ int main(int argc,char* argv[])
        socklen_t addrlen_udp,addrlen_tcp;
        ssize_t n,nread;
        char buffer[128];
-       char *ptr, str[50];
+       char  str[50];
         int fdTCP,newfd;       
-       ssize_t j,nw;
+       ssize_t j;
        int maxfdp1;
        anel i;
        
@@ -50,9 +59,7 @@ int main(int argc,char* argv[])
     	i.eu.ip=argv[2];
        i.eu.porto=argv[3];
 
-       memset(&act,0,sizeof act);
-       act.sa_handler=SIG_IGN;
-       if(sigaction(SIGCHLD,&act,NULL)==-1)/*error*/exit(10);
+      
     
  
     /* create listening TCP socket */
