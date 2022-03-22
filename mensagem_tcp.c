@@ -1,11 +1,11 @@
 
 #include "Anel.h"
 
-void mensagem_tcp(char *opt,no dest,no envio)
+void mensagem_tcp(char *opt,no dest,no envio,int nbits)
 {
         int fd,n;
        ssize_t nwritten;
-       char ptr[24];
+       char ptr[nbits];
        
        struct addrinfo hints,*res;
        fd=socket(AF_INET,SOCK_STREAM,0);//TCP socket
@@ -20,10 +20,9 @@ void mensagem_tcp(char *opt,no dest,no envio)
        if(n!=0)/*error*/exit(1);
        n=connect(fd,res->ai_addr,res->ai_addrlen);
        if(n==-1)/*error*/exit(1);
-
-       snprintf(ptr,24,"%s %d %s %s\n",opt,envio.chave,envio.ip,envio.porto);
+       if(nbits==24)snprintf(ptr,nbits,"%s %d %s %s\n",opt,envio.chave,envio.ip,envio.porto);
        
-       nwritten=write(fd,ptr,24);
+       nwritten=write(fd,ptr,nbits);
        if(nwritten<=0)/*error*/exit(1);
               
           

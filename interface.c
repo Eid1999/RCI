@@ -23,7 +23,7 @@ anel interface (anel i){
    	 char *opt, str[50];
    	 no p;
    	 
-    	
+    	       
 		printf("\nInterface do usuario, escreva o comando:\n");
               p.porto= (char*) malloc(50);
               p.ip= (char*) malloc(50);
@@ -73,7 +73,7 @@ anel interface (anel i){
 		              memcpy(i.prec.porto,p.porto,50);
 		              
 		              opt="SELF";
-		              mensagem_tcp(opt,i.prec,i.eu);
+		              mensagem_tcp(opt,i.prec,i.eu,24);
 		            
 			}
 			else if(strcmp(opt,"show")==0) {
