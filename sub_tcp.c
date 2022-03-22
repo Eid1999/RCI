@@ -6,6 +6,8 @@ anel sub_tcp(anel i, char buffer[])
        int j=0;
    	 char *opt;
    	 no p;
+   	p.porto= (char*) malloc(50);
+       p.ip= (char*) malloc(50);
    	 
     	
               c = strtok(buffer, " ");
@@ -56,7 +58,6 @@ anel sub_tcp(anel i, char buffer[])
                             i.next.porto= (char*) malloc(50);
 	                     i.next.ip= (char*) malloc(50);
 	                     memcpy(i.next.ip,p.ip,50);
-	                     
 	                     memcpy(i.next.porto,p.porto,50);
 	                     i.next.chave=p.chave;
 	                    
@@ -66,18 +67,28 @@ anel sub_tcp(anel i, char buffer[])
                             opt="PRED";
 		              mensagem_tcp(opt,i.next,p);
 		               memcpy(i.next.ip,p.ip,50);
-		               i.next.chave=p.chave;
 		               memcpy(i.next.porto,p.porto,50);
+		               i.next.chave=p.chave;
+		               return i;
+		               
 		              
-                     
-                     } 
 		              
-				return i;
+                            } 
+		              
+	
 			}
-			else if(strcmp(opt,"PREB")==0) {
-			       printf("new");
-		       }
-		       else if(strcmp(opt,"pentry")==0) {
+		 if (strcmp(opt,"PRED")==0){
+		       opt="SELF";
+		       memcpy(i.prec.porto,p.porto,50);
+	              memcpy(i.prec.ip,p.ip,50);
+                     i.prec.chave=p.chave;
+		       mensagem_tcp(opt,i.prec,i.eu);
+		       
+			 }
+		else if(strcmp(opt,"PREB")==0) {
+		       printf("new");
+	              }
+	       else if(strcmp(opt,"pentry")==0) {
 		              
 			}
        return i;

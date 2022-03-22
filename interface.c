@@ -71,6 +71,7 @@ anel interface (anel i){
 		              i.prec.chave=p.chave;
 		              memcpy(i.prec.ip,p.ip,50);
 		              memcpy(i.prec.porto,p.porto,50);
+		              
 		              opt="SELF";
 		              mensagem_tcp(opt,i.prec,i.eu);
 		            
