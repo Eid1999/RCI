@@ -1,19 +1,5 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+
 #include "Anel.h"
-int connect(int sockfd,const struct sockaddr *serv_addr,
-socklen_t addrlen);
-
-
-
-
 
 anel interface (anel i){
 

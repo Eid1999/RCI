@@ -110,7 +110,7 @@ anel sub_processo(anel i, char buffer[])
 			else {mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find);return i;}
 			//CRIAR SELECT PARA O ACK
 		}
-		else if(i.eu.chave==p.chave)printf("Chave não se encontra no anel")
+		else if(i.eu.chave==p.chave)printf("Chave não se encontra no anel");
 		else
 		{
 			opt="FND";

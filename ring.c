@@ -64,9 +64,10 @@ int main(int argc,char* argv[])
        i.atalho.ip=NULL;
        
        
-       printf("Crie um anel ou aperte enter para acessar a interface do utilizador:\n");
+       printf("Crie um anel ou aperte enter para acender a interface do utilizador:\n");
        fgets(str, 50, stdin);
-       if(strcmp(str,"n")!=0)i=interface(i);
+       fflush(stdout);
+       if(strncmp(str,"n",1)!=0)i=interface(i);
        
     /* create listening TCP socket */
        if((i.fdTCP=socket(AF_INET,SOCK_STREAM,0))==-1)exit(11);//error
@@ -103,7 +104,7 @@ int main(int argc,char* argv[])
         
         
         
-    
+    printf("\nAnel criado, aperte enter para acender a interface do utilizador:\n");
        for (;;) {FD_ZERO(&rset);// clear the descriptor set
  
                // set listenfd and udpfd in readset
@@ -120,7 +121,7 @@ int main(int argc,char* argv[])
                 if (FD_ISSET(STDIN, &rset)){
                        fgets(str, 50, stdin);
                        i=interface(i);
-                       printf("\nAperte enter para acessar a interface do utilizador:\n");
+                       printf("\nAperte enter para acender a interface do utilizador:\n");
                 }
                if (FD_ISSET(i.fdTCP, &rset)) {
                      addrlen_tcp=sizeof(addr_tcp);
