@@ -73,7 +73,7 @@ anel sub_processo(anel i, char buffer[])
 
 		else{
 			opt="PRED";
-			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))mensagem_tcp(opt,i.next,p,24,0,0);
+			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))mensagem_tcp(opt,i.next,p,24,0,0);//MANDA MENSAGEM APENAS NA ENTRADA DO NÓ(PENTRY)
 			memcpy(i.next.ip,p.ip,50);
 			memcpy(i.next.porto,p.porto,50);
 			i.next.chave=p.chave;
@@ -84,14 +84,14 @@ anel sub_processo(anel i, char buffer[])
 	}
 	if (strcmp(opt,"PRED")==0){
 		opt="SELF";
-		if( i.next.chave!=i.prec.chave)
+		if( p.chave!=i.prec.chave)
 		{
 			memcpy(i.prec.porto,p.porto,50);
 			memcpy(i.prec.ip,p.ip,50);
 			i.prec.chave=p.chave;
 			mensagem_tcp(opt,i.prec,i.eu,24,0,0);
 		}
-		else
+		else//SAIDA COM APENAS DOIS NÓS
 		{
 			free(i.prec.porto);i.prec.porto=NULL;
 			free(i.prec.ip);i.prec.ip=NULL;
