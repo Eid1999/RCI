@@ -49,7 +49,7 @@ anel sub_tcp(anel i, char buffer[])
 	                            memcpy(i.prec.ip,p.ip,50);
                                    i.prec.chave=p.chave;
                                    opt="SELF";
-	                            mensagem_tcp(opt,i.prec,i.eu,24);
+	                            mensagem_tcp(opt,i.prec,i.eu,24,0,0);
 	                            memcpy(i.next.porto,p.porto,50);
 	                            memcpy(i.next.ip,i.prec.ip,50);
 	                             i.next.chave=i.prec.chave;
@@ -67,7 +67,7 @@ anel sub_tcp(anel i, char buffer[])
 
                      else{
                             opt="PRED";
-		              if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))mensagem_tcp(opt,i.next,p,24);
+		              if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))mensagem_tcp(opt,i.next,p,24,0,0);
 		               memcpy(i.next.ip,p.ip,50);
 		               memcpy(i.next.porto,p.porto,50);
 		               i.next.chave=p.chave;
@@ -81,10 +81,20 @@ anel sub_tcp(anel i, char buffer[])
 			}
 		 if (strcmp(opt,"PRED")==0){
 		       opt="SELF";
-		       memcpy(i.prec.porto,p.porto,50);
-	              memcpy(i.prec.ip,p.ip,50);
-                     i.prec.chave=p.chave;
-		       mensagem_tcp(opt,i.prec,i.eu,24);
+		       if( i.next.chave!=i.prec.chave){
+				memcpy(i.prec.porto,p.porto,50);
+			       memcpy(i.prec.ip,p.ip,50);
+		              i.prec.chave=p.chave;
+				mensagem_tcp(opt,i.prec,i.eu,24,0,0);}
+			else
+			{
+				free(i.prec.porto);i.prec.porto=NULL;
+				free(i.prec.ip);i.prec.ip=NULL;
+				free(i.next.porto);i.next.porto=NULL;
+				free(i.next.ip);i.next.ip=NULL;
+				
+			
+			}
 		       
 			 }
 		else if(strcmp(opt,"PREB")==0) {

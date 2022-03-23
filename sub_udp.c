@@ -36,7 +36,7 @@ anel sub_udp(anel i, char buffer[])
                      c = strtok (NULL, " ");
                      j++;
                }
-              if (strcmp(opt,"SELF")==0){
+              if (strcmp(opt,"EFND")==0){
               	i.atalho.porto= (char*) malloc(50);
                      i.atalho.ip= (char*) malloc(50);
                      //IMPOR PRECESSOR
@@ -44,5 +44,7 @@ anel sub_udp(anel i, char buffer[])
 	              memcpy(i.atalho.ip,p.ip,50);
 	              memcpy(i.atalho.porto,p.porto,50);  
 			}
+			if (strcmp(opt,"EPRED")==0);
+			
        return i;
 }

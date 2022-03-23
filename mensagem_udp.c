@@ -2,7 +2,7 @@
 #include "Anel.h"
 
 
-void mensagem_udp(char *opt, no dest, no envio,int nbits)
+void mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 {
 	struct addrinfo hints,*res;
 	int fd,errcode;
@@ -16,7 +16,9 @@ void mensagem_udp(char *opt, no dest, no envio,int nbits)
 	errcode=getaddrinfo(dest.ip,dest.porto,&hints,&res);
 	if(errcode!=0)/*error*/exit(1);
 	if(nbits==24)snprintf(ptr,nbits,"%s %d %s %s\n",opt,envio.chave,envio.ip,envio.porto);
+	if(nbits==34)snprintf(ptr,nbits,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
 	n=sendto(fd,ptr,nbits,0,res->ai_addr,res->ai_addrlen);
+	printf("%s",ptr);
 	if(n==-1)/*error*/exit(1);
 	freeaddrinfo(res);
 	close(fd);

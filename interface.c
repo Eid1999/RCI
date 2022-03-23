@@ -60,6 +60,14 @@ anel interface (anel i){
 		              
 				return i;
 			}
+		if(strcmp(opt,"find")==0)
+		{
+			if(i.next.ip==NULL)exit(0);
+			opt="FDK";
+	              mensagem_tcp(opt,i.prec,i.eu,34,p.chave,i.n_find);
+			
+		}
+		
 		else if(strcmp(opt,"bentry")==0) {
 			       printf("new");
 		       }
@@ -71,9 +79,8 @@ anel interface (anel i){
 	              i.prec.chave=p.chave;
 	              memcpy(i.prec.ip,p.ip,50);
 	              memcpy(i.prec.porto,p.porto,50);
-	              
 	              opt="SELF";
-	              mensagem_tcp(opt,i.prec,i.eu,24);
+	              mensagem_tcp(opt,i.prec,i.eu,24,0,0);
 		            
 		}
 		
@@ -86,7 +93,7 @@ anel interface (anel i){
 	              memcpy(i.atalho.ip,p.ip,50);
 	              memcpy(i.atalho.porto,p.porto,50);
 	              opt="SELF";
-	              mensagem_udp(opt,i.atalho,i.eu,24);          
+	              mensagem_udp(opt,i.atalho,i.eu,24,0,0);          
 		}
 		
 		else if(strcmp(opt,"show")==0) {
@@ -105,13 +112,13 @@ anel interface (anel i){
 	       else if(strcmp(opt,"leave")==0){
 	              
 	              opt="PRED";
-	              if(i.next.ip!=NULL)mensagem_tcp(opt,i.next,i.prec,24);
+	              if(i.next.ip!=NULL)mensagem_tcp(opt,i.next,i.prec,24,0,0);
 	               if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);i.prec.ip=NULL;i.prec.porto=NULL;}
 		       if(i.next.ip!=NULL){free(i.prec.ip);free(i.prec.porto);i.next.ip=NULL;i.next.porto=NULL;}
 		       if(i.atalho.ip!=NULL){free(i.prec.ip);free(i.prec.porto);i.atalho.ip=NULL;i.atalho.porto=NULL;}
+		       i.leave=1;
 			return i;
-			
-	              
+			      
 	       }
 
 	       

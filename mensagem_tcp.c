@@ -1,7 +1,7 @@
 
 #include "Anel.h"
 
-void mensagem_tcp(char *opt,no dest,no envio,int nbits)
+void mensagem_tcp(char *opt,no dest,no envio,int nbits,int k, int n_find)
 {
         int fd,n;
        ssize_t nwritten;
@@ -20,6 +20,7 @@ void mensagem_tcp(char *opt,no dest,no envio,int nbits)
        n=connect(fd,res->ai_addr,res->ai_addrlen);
        if(n==-1)/*error*/exit(1);
        if(nbits==24)snprintf(ptr,nbits,"%s %d %s %s\n",opt,envio.chave,envio.ip,envio.porto);
+       if(nbits==34)snprintf(ptr,nbits,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
        
        nwritten=write(fd,ptr,nbits);
        if(nwritten<=0)/*error*/exit(1);
