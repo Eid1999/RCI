@@ -111,6 +111,8 @@ anel interface (anel i){
 		       if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);}
 		       if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);}
 		       if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);}
+		       close(i.fdTCP);
+		       close(i.fdUDP);
 		       exit(0);
 	       }
 	       else if(strcmp(opt,"l")==0){

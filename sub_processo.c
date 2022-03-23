@@ -101,11 +101,11 @@ anel sub_processo(anel i, char buffer[])
 	}
 
 
-	if (strcmp(opt,"FDN")==0)
+	if (strcmp(opt,"FND")==0)
 	{
 		if(k==i.eu.chave)
 		{
-			opt="RSP";		
+			opt="RSP";
 			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,34,p.chave,i.n_find);}
 			else {opt="RSP";mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find);return i;}
 			//CRIAR SELECT PARA O ACK
@@ -113,9 +113,27 @@ anel sub_processo(anel i, char buffer[])
 		else
 		{
 			opt="FND";
-			if(i.atalho.ip!=NULL && d(k,i.atalho.chave)<d(k,i.next.chave)){mensagem_udp(opt,i.atalho,p,34,k,i.n_find);}
-			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find);}
+			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,34,k,i.n_find);}
+			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find);}//PROBLEMA AKI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//CRIAR SELECT PARA O ACK
 		}
+	}
+	if (strcmp(opt,"RSP")==0)
+	{
+		opt="RPS";
+		if(k==i.eu.chave)
+		{
+			printf("Nó %d: (%s\t:\t%s)",p.chave, p.ip,p.porto);
+			//CRIAR SELECT PARA O ACK
+		}
+		else
+		{
+			
+			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,34,k,i.n_find);}
+			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find);return i;}
+			//CRIAR SELECT PARA O ACK
+		}
+		
 	}
 
 	else if(strcmp(opt,"PREB")==0) {
