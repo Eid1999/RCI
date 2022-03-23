@@ -30,7 +30,7 @@ int max(int x, int y)
 int d(int d1,int d2){
        int c;
        c=d2-d1;
-       while(c<-1)c=c+mod;
+       while(c<0)c=c+mod;
        return c;
 }
 
@@ -38,14 +38,14 @@ int main(int argc,char* argv[])
 {
        struct addrinfo hints,*res;
 	struct addrinfo hints_udp,*res_udp;
-       int fdUDP,errcode,nready;
+       int errcode,nready;
        fd_set rset;
        struct sockaddr addr_udp, addr_tcp;
        socklen_t addrlen_udp,addrlen_tcp;
        ssize_t n,nread;
        char buffer[128];
        char  str[50];
-        int fdTCP,newfd;       
+        int newfd;       
        ssize_t j;
        int maxfdp1;
        anel i;
@@ -63,7 +63,7 @@ int main(int argc,char* argv[])
        i.prec.ip=NULL;
        i.atalho.ip=NULL;
     /* create listening TCP socket */
-       if((fdTCP=socket(AF_INET,SOCK_STREAM,0))==-1)exit(11);//error
+       if((i.fdTCP=socket(AF_INET,SOCK_STREAM,0))==-1)exit(11);//error
        
        memset(&hints,0,sizeof hints);
        
@@ -75,23 +75,23 @@ int main(int argc,char* argv[])
        if((errcode=getaddrinfo(NULL,i.eu.porto,&hints,&res))!=0)/*error*/exit(13);
        
        
-       if(bind(fdTCP,res->ai_addr,res->ai_addrlen)==-1)/*error*/exit(14);
-       if(listen(fdTCP,5)==-1)/*error*/exit(15);
+       if(bind(i.fdTCP,res->ai_addr,res->ai_addrlen)==-1)/*error*/exit(14);
+       if(listen(i.fdTCP,5)==-1)/*error*/exit(15);
 
  
     /* create UDP socket */
-       if((fdUDP=socket(AF_INET,SOCK_DGRAM,0))==-1)exit(16);//error
+       if((i.fdUDP=socket(AF_INET,SOCK_DGRAM,0))==-1)exit(16);//error
        memset(&hints_udp,0,sizeof hints_udp);
        hints_udp.ai_family=AF_INET;//IPv4z
        hints_udp.ai_socktype=SOCK_DGRAM;//UDP socket
        hints_udp.ai_flags=AI_PASSIVE;
        if((errcode=getaddrinfo(NULL,i.eu.porto,&hints_udp,&res_udp))!=0)/*error*/exit(17);
-       if(bind(fdUDP,res_udp->ai_addr,res_udp->ai_addrlen)==-1)/*error*/exit(18);
+       if(bind(i.fdUDP,res_udp->ai_addr,res_udp->ai_addrlen)==-1)/*error*/exit(18);
  
     
        freeaddrinfo(res);
            // get maxfd
-       maxfdp1 = max(fdUDP, fdTCP) ;
+       maxfdp1 = max(i.fdUDP, i.fdTCP) ;
        maxfdp1=max(STDIN,maxfdp1)+1;
        
         printf("Crie um anel ou aperte enter para acessar a interface do utilizador:\n");
@@ -101,8 +101,8 @@ int main(int argc,char* argv[])
        for (;;) {FD_ZERO(&rset);// clear the descriptor set
  
                // set listenfd and udpfd in readset
-               FD_SET(fdTCP, &rset);
-               FD_SET(fdUDP, &rset);
+               FD_SET(i.fdTCP, &rset);
+               FD_SET(i.fdUDP, &rset);
                FD_SET(STDIN, &rset);
         
                // select the ready descriptor
@@ -116,30 +116,30 @@ int main(int argc,char* argv[])
                        if(strcmp(str,"novo\n")!=0)i=interface(i);
                        printf("\nAperte enter para acessar a interface do utilizador:\n");
                 }
-               if (FD_ISSET(fdTCP, &rset)) {
+               if (FD_ISSET(i.fdTCP, &rset)) {
                      addrlen_tcp=sizeof(addr_tcp);
-                     if((newfd=accept(fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(0);
+                     if((newfd=accept(i.fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(0);
                      j=read(newfd,buffer,128);
                      if(j==-1)/*error*/exit(2);
                      printf("%s",buffer);
                      close(newfd);
-                     i=sub_tcp(i,buffer);
+                     i=sub_processo(i,buffer);
 
                }
                // if udp socket is readable receive the message.
-               if (FD_ISSET(fdUDP, &rset)) {
+               if (FD_ISSET(i.fdUDP, &rset)) {
                      addrlen_udp=sizeof(addr_udp);
-                     nread=recvfrom(fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);
+                     nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);
                      if(nread==-1)/*error*/exit(4);
                      printf("%s",buffer);
-                     i=sub_udp(i,buffer);
-                     n=sendto(fdUDP,buffer,nread,0,&addr_udp,addrlen_udp);
+                     n=sendto(i.fdUDP,buffer,nread,0,&addr_udp,addrlen_udp);
                      if(n==-1)/*error*/exit(5);
+                     i=sub_processo(i,buffer);
                      
                      close(nread);
                      
                }
-               if(i.leave==1){close(fdUDP);close(fdTCP);goto novo;}
+               if(i.leave==1){close(i.fdUDP);close(i.fdTCP);goto novo;}
     }
 }   
 

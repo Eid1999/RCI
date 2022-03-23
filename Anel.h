@@ -26,11 +26,12 @@ typedef struct _anel {
     no atalho;
     int leave;
     int n_find;
+    int fdTCP;
+    int fdUDP;
 }anel;
 
 
-anel sub_tcp(anel i, char buffer[]);
-anel sub_udp(anel i, char buffer[]);
+anel sub_processo(anel i, char buffer[]);
 anel interface(anel i);
 void mensagem_tcp(char *opt, no dest, no envio,int nbits,int k, int n_find);
 void mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find);
