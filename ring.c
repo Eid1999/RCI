@@ -50,6 +50,7 @@ int main(int argc,char* argv[])
        int maxfdp1;
        anel i;
        
+       
        i.next.ip=NULL; 
        i.prec.ip=NULL;
        i.atalho.ip=NULL;
@@ -121,9 +122,9 @@ int main(int argc,char* argv[])
                      if((newfd=accept(fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(0);
                      j=read(newfd,buffer,128);
                      if(j==-1)/*error*/exit(2);
-                     printf("%s",buffer);
                      close(newfd);
                      i=sub_tcp(i,buffer);
+
                }
                // if udp socket is readable receive the message.
                if (FD_ISSET(fdUDP, &rset)) {
@@ -132,6 +133,8 @@ int main(int argc,char* argv[])
                      if(nread==-1)/*error*/exit(4);
                      n=sendto(fdUDP,buffer,nread,0,&addr_udp,addrlen_udp);
                      if(n==-1)/*error*/exit(5);
+                     buffer[n] = '\0';
+                     i=sub_udp(i,buffer);
                }
     }
 }   
