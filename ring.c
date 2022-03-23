@@ -42,7 +42,7 @@ int main(int argc,char* argv[])
        fd_set rset;
        struct sockaddr addr_udp, addr_tcp;
        socklen_t addrlen_udp,addrlen_tcp;
-       ssize_t n,nread;
+       ssize_t nread;
        char buffer[128];
        char  str[50];
         int newfd;       
@@ -62,6 +62,12 @@ int main(int argc,char* argv[])
        i.next.ip=NULL; 
        i.prec.ip=NULL;
        i.atalho.ip=NULL;
+       
+       
+       printf("Crie um anel ou aperte enter para acessar a interface do utilizador:\n");
+       fgets(str, 50, stdin);
+       if(strcmp(str,"n")!=0)i=interface(i);
+       
     /* create listening TCP socket */
        if((i.fdTCP=socket(AF_INET,SOCK_STREAM,0))==-1)exit(11);//error
        
@@ -94,7 +100,7 @@ int main(int argc,char* argv[])
        maxfdp1 = max(i.fdUDP, i.fdTCP) ;
        maxfdp1=max(STDIN,maxfdp1)+1;
        
-        printf("Crie um anel ou aperte enter para acessar a interface do utilizador:\n");
+        
         
         
     
@@ -113,7 +119,7 @@ int main(int argc,char* argv[])
                // it by accepting the connection
                 if (FD_ISSET(STDIN, &rset)){
                        fgets(str, 50, stdin);
-                       if(strcmp(str,"novo\n")!=0)i=interface(i);
+                       i=interface(i);
                        printf("\nAperte enter para acessar a interface do utilizador:\n");
                 }
                if (FD_ISSET(i.fdTCP, &rset)) {
@@ -132,10 +138,7 @@ int main(int argc,char* argv[])
                      nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);
                      if(nread==-1)/*error*/exit(4);
                      printf("%s",buffer);
-                     n=sendto(i.fdUDP,buffer,nread,0,&addr_udp,addrlen_udp);
-                     if(n==-1)/*error*/exit(5);
                      i=sub_processo(i,buffer);
-                     
                      close(nread);
                      
                }

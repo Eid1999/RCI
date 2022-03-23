@@ -107,23 +107,25 @@ anel sub_processo(anel i, char buffer[])
 		{
 			opt="RSP";
 			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,34,p.chave,i.n_find);}
-			else {opt="RSP";mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find);return i;}
+			else {mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find);return i;}
 			//CRIAR SELECT PARA O ACK
 		}
+		else if(i.eu.chave==p.chave)printf("Chave não se encontra no anel")
 		else
 		{
 			opt="FND";
 			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,34,k,i.n_find);}
-			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find);}//PROBLEMA AKI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find);}
 			//CRIAR SELECT PARA O ACK
 		}
 	}
 	if (strcmp(opt,"RSP")==0)
 	{
-		opt="RPS";
+		opt="RSP";
 		if(k==i.eu.chave)
 		{
-			printf("Nó %d: (%s\t:\t%s)",p.chave, p.ip,p.porto);
+			printf("Nó %d: (%s : %s)",p.chave, p.ip,p.porto);
+			fflush(stdout);
 			//CRIAR SELECT PARA O ACK
 		}
 		else

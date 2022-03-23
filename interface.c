@@ -62,6 +62,7 @@ anel interface (anel i){
 			}
 		if(strcmp(opt,"f")==0)
 		{
+			if(j!=2){printf("\nComando invalido\n");return i;}
 			if(i.next.ip==NULL)exit(0);
 			if(p.chave==i.eu.chave){printf("É TU");return i;}
 			else
@@ -76,7 +77,7 @@ anel interface (anel i){
 			       printf("new");
 		       }
 	       else if(strcmp(opt,"p")==0) {
-		       
+		       if(j!=4){printf("\nComando invalido\n");return i;}
                      i.prec.porto= (char*) malloc(50);
                      i.prec.ip= (char*) malloc(50);
                      //IMPOR PRECESSOR
@@ -89,15 +90,15 @@ anel interface (anel i){
 		}
 		
 	       else if(strcmp(opt,"c")==0) {
-		       
+	       	
+		       if(j!=4){printf("\nComando invalido\n");return i;}
                      i.atalho.porto= (char*) malloc(50);
                      i.atalho.ip= (char*) malloc(50);
                      
 	              i.atalho.chave=p.chave;
 	              memcpy(i.atalho.ip,p.ip,50);
 	              memcpy(i.atalho.porto,p.porto,50);
-	              opt="SELF";
-	              mensagem_udp(opt,i.atalho,i.eu,24,0,0);          
+	              mensagem_udp("EMPTY",i.atalho,i.eu,0,0,0);          
 		}
 		
 		else if(strcmp(opt,"s")==0) {
