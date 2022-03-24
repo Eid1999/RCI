@@ -94,7 +94,7 @@ anel sub_processo(anel i, char buffer[])
 		opt="SELF";
 		
 		
-		if( p.chave!=i.prec.chave)//PRIMEIRA ETAPA DO LEAVE, E SEGUNDA ETAPA DO PENTRY
+		if( p.chave!=i.eu.chave)//PRIMEIRA ETAPA DO LEAVE, E SEGUNDA ETAPA DO PENTRY
 		{
 			memcpy(i.prec.porto,p.porto,50);
 			memcpy(i.prec.ip,p.ip,50);

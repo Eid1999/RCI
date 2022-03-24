@@ -5,7 +5,8 @@ void mensagem_tcp(char *opt,no dest,no envio,int nbits,int k, int n_find)
 {
         int fd,n;
        ssize_t nwritten;
-       char ptr[nbits];
+       char ptr[nbits],*buffer;
+       
        
        struct addrinfo hints,*res;
        fd=socket(AF_INET,SOCK_STREAM,0);//TCP socket
@@ -21,11 +22,16 @@ void mensagem_tcp(char *opt,no dest,no envio,int nbits,int k, int n_find)
        if(n==-1)/*error*/exit(1);
        if(nbits==24)snprintf(ptr,nbits,"%s %d %s %s\n",opt,envio.chave,envio.ip,envio.porto);
        if(nbits==34)snprintf(ptr,nbits,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
-       
+/*       NOACK:*/
        nwritten=write(fd,ptr,nbits);
        if(nwritten<=0)/*error*/exit(1);
               
-          //POR ACK AKI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/*          if(nbits==34)*/
+/*          {*/
+/*          buffer=ACK(fd,0);*/
+/*          if(strncmp(buffer,"ACK",3)!=0){free(buffer);goto NOACK;}*/
+/*          free(buffer);*/
+/*          }*/
        
        close(fd);
        return ;
