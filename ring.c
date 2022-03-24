@@ -129,6 +129,8 @@ int main(int argc,char* argv[])
 			j=read(newfd,buffer,128);
 			if(j==-1)/*error*/exit(2);
 			printf("%s",buffer);
+			if(strncmp("FND",buffer,3)==0|| strncmp("RSP",buffer,3)==0){
+			newfd=write(newfd,"ACK\n",5);}
 			close(newfd);
 			i=sub_processo(i,buffer);
 
@@ -138,6 +140,7 @@ int main(int argc,char* argv[])
 			addrlen_udp=sizeof(addr_udp);
 			nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);
 			if(nread==-1)/*error*/exit(4);
+			if(strncmp("FND",buffer,3)|| strncmp("RSP",buffer,3))sendto(i.fdUDP,"ACK",nread,0,&addr_udp,addrlen_udp);
 			printf("%s",buffer);
 			i=sub_processo(i,buffer);
 			close(nread);

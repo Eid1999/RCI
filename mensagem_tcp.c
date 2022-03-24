@@ -25,7 +25,7 @@ void mensagem_tcp(char *opt,no dest,no envio,int nbits,int k, int n_find)
        nwritten=write(fd,ptr,nbits);
        if(nwritten<=0)/*error*/exit(1);
               
-          
+          //POR ACK AKI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
        
        close(fd);
        return ;

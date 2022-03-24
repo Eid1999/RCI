@@ -47,9 +47,9 @@ anel interface (anel i){
 	//COMANDO FIND
 	if(strcmp(opt,"f")==0)
 	{
-		if(j!=2){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
+		if(j!=2){printf("\nComando incompleto\n");free(c);return i;}//ERRO NO COMANDO
 		if(i.next.ip==NULL)exit(0);//ANEL DE UM SÓ NÓ
-		if(p.chave==i.eu.chave){printf("É TU");return i;}//É TU
+		if(p.chave==i.eu.chave){printf("ES TU");free(c);return i;}//ES TU
 		opt="FND";
 		if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,34,p.chave,i.n_find);}//PROCURA POR ATALHO
 		else {mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find);}//PROCURA PELO SUCESSOR
@@ -60,7 +60,7 @@ anel interface (anel i){
 			printf("new");
 		}
 	else if(strcmp(opt,"p")==0) {
-		if(j!=4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
+		if(j!=4){printf("\nComando incompleto\n");free(c);return i;}//ERRO NO COMANDO
 		i.prec.porto= (char*) malloc(50);
 		i.prec.ip= (char*) malloc(50);
 		//SALVA PRECESSOR
@@ -75,7 +75,7 @@ anel interface (anel i){
 	//COMANDO CHORD
 	else if(strcmp(opt,"c")==0) {
 		
-		if(j!=4){printf("\nComando invalido\n");return i;}
+		if(j!=4){printf("\nComando invalido\n");free(c);return i;}//ERRO NO COMANDO
 		i.atalho.porto= (char*) malloc(50);
 		i.atalho.ip= (char*) malloc(50);
 		//SALVA ATALHO
@@ -116,13 +116,14 @@ anel interface (anel i){
 		if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);i.next.ip=NULL;i.next.porto=NULL;}
 		if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);i.atalho.ip=NULL;i.atalho.porto=NULL;}
 		i.leave=1;
+		free(c);
 		return i;
 		      
 	}
 
 	
 	else{ printf("Comando invalido");}
-	
+	free(c);
 	return i;
 }
 
