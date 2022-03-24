@@ -17,16 +17,16 @@ void mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 	if(errcode!=0)/*error*/exit(1);
 	if(nbits==24)snprintf(ptr,nbits,"%s %d %s %s\n",opt,envio.chave,envio.ip,envio.porto);
 	if(nbits==34)snprintf(ptr,nbits,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
-/*	NOACK:*/
+	NOACK:
 	if(nbits!=0)n=sendto(fd,ptr,nbits,0,res->ai_addr,res->ai_addrlen);
 	if(n==-1)/*error*/exit(1);
 	
-/*	if(nbits==34)*/
-/*          {*/
-/*          buffer=ACK(0,fd);*/
-/*          if(strncmp(buffer,"ACK",3)!=0){free(buffer);goto NOACK;}*/
-/*          free(buffer);*/
-/*          }*/
+	if(nbits==34)
+          {
+          buffer=ACK(0,fd);
+          if(strncmp(buffer,"ACK",3)!=0){free(buffer);goto NOACK;}
+          free(buffer);
+          }
 	
 	freeaddrinfo(res);
 	close(fd);

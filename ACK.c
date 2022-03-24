@@ -33,10 +33,10 @@ char *ACK(int fdTCP, int fdUDP)//TROCAR PARA MENSAGENS
 		if (fdTCP!=0 && FD_ISSET(fdTCP, &rset)) 
 		{
 			addrlen_tcp=sizeof(addr_tcp);
-			if((newfd=accept(fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(0);
-			j=read(newfd,buffer,128);
+/*			if((newfd=accept(fdTCP,&addr_tcp,&addrlen_tcp))==-1)*/
+/*			/*error**/
+			j=read(fdTCP,buffer,128);
 			if(j==-1)/*error*/exit(2);
-			close(newfd);
 			if (strncmp("ACK",buffer,3)==0)return buffer;
 			
 		}	
