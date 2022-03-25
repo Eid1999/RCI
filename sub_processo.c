@@ -120,7 +120,6 @@ anel sub_processo(anel i, char buffer[])
 			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,34,p.chave,i.n_find);}//PROCURA O MENOR CAMINHO, ATALHO OU SUCESSOR
 			else {mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find);}
 			
-			//CRIAR SELECT PARA O ACK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		}
 		else if(d(i.eu.chave,k)<d(i.next.chave,k))//VERIFICA SE O NÓ NÃO SE ENCONTRA NO ANEL
 		{
@@ -133,7 +132,6 @@ anel sub_processo(anel i, char buffer[])
 			opt="FND";
 			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,34,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
 			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find);}
-			//CRIAR SELECT PARA O ACK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		}
 		return i;
 	}
@@ -155,7 +153,7 @@ anel sub_processo(anel i, char buffer[])
 
 			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,34,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
 			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find);}
-			//CRIAR SELECT PARA O ACK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			
 		}
 	}
 

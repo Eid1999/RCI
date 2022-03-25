@@ -30,6 +30,7 @@ typedef struct _anel {
     int n_find;
     int fdTCP;
     int fdUDP;
+    int fdEFND;
 }anel;
 
 char *ACK(int fdTCP, int fdUDP);//PROGRAMA PARA VALIDAÇÃO DE RECEBIMENTO

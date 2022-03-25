@@ -143,7 +143,6 @@ int main(int argc,char* argv[])
 			if(strncmp("FND",buffer,3)|| strncmp("RSP",buffer,3))sendto(i.fdUDP,"ACK",nread,0,&addr_udp,addrlen_udp);
 			printf("%s",buffer);
 			i=sub_processo(i,buffer);
-			close(nread);
 		}
 		//PARTE DO COMANDO LEAVE
 		if(i.leave==1){close(i.fdUDP);close(i.fdTCP);goto novo;}

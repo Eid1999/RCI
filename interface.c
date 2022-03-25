@@ -55,7 +55,8 @@ anel interface (anel i){
 	}
 	//COMANDO BENTRY
 	else if(strcmp(opt,"b")==0) {
-			printf("new");
+			opt="EFND";
+			mensagem_udp(opt,p,i.eu,8,p.chave,0);
 		}
 	else if(strcmp(opt,"p")==0) {
 		if(j!=4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
