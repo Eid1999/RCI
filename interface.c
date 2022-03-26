@@ -9,7 +9,8 @@ anel interface (anel i){
    	 char *opt, str[50];
    	 no p;
 	//RECEBE OS COMANDO
-	printf("\nInterface do usuario, escreva o comando:\n");
+	INTERFACE:
+	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
 	
 	fgets(str, 50, stdin);
 	c = strtok(str, " ");
@@ -43,7 +44,8 @@ anel interface (anel i){
 	
 
 	//COMANDO FIND
-	if(strcmp(opt,"f")==0)
+	if(strcmp(opt,"n")==0) return i;
+	else if(strcmp(opt,"f")==0)
 	{
 		if(j!=2){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
 		if(i.next.ip==NULL)exit(0);//ANEL DE UM SÓ NÓ
@@ -84,7 +86,7 @@ anel interface (anel i){
 		mensagem_udp("EMPTY",i.atalho,i.eu,0,0,0); // CONECTA AO ATALHO  
 	}
 	//COMANDO ECHORD
-	else if(strcmp(opt,"e")==0) {
+	else if(strcmp(opt,"d")==0) {
 		if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);i.atalho.ip=NULL;i.atalho.porto=NULL;}
 	}
 	//COMANDO SHOW
@@ -96,7 +98,7 @@ anel interface (anel i){
 		if(i.atalho.ip!=NULL)printf("\nINFORMAÇÃO ATALHO: %d %s %s \n",i.atalho.chave,i.atalho.ip,i.atalho.porto);
 	}
 	//COMANDO EXIT?????????????(MESMA INICIAL Q O ECHORD)
-	else if(strcmp(opt,"q")==0){
+	else if(strcmp(opt,"e")==0){
 		//LIMPA INFORMAÇOES
 		if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);}
 		if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);}
@@ -124,9 +126,11 @@ anel interface (anel i){
 		close(i.fdUDP);
 		      
 	}
+	else if(strcmp(opt,"-h")==0)printf("\nComandos disponiveis:\n\n n->new \n\n p [CHAVE] [IP] [PORTO]->pentry\n\n b[CHAVE](EM CONSTRUÇAO)->bentry \n\n f [CHAVE]->find\n \n l->leave\n\n e->exit \n\n c->chord\n\n d->delete chord \n\n s->show\n\n");
 
 	
-	else{ printf("Comando invalido");}
+	else{ printf("\nComando invalido\n");}
+	if(i.next.ip==NULL) goto INTERFACE;
 
 	return i;
 }

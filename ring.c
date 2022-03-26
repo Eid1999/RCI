@@ -67,10 +67,10 @@ int main(int argc,char* argv[])
 	i.prec.fd=-1;
 
 	//COMANDO NEW
-	printf("Crie um anel ou aperte enter para acender a interface do utilizador:\n");
-	fgets(str, 50, stdin);
-	fflush(stdout);
-	if(strncmp(str,"n",1)!=0)i=interface(i);
+/*	printf("Crie um anel ou aperte enter para acender a interface do utilizador:\n");*/
+/*	fgets(str, 50, stdin);*/
+/*	fflush(stdout);*/
+	i=interface(i);
 
 	/* create listening TCP socket */
 	if((i.fdTCP=socket(AF_INET,SOCK_STREAM,0))==-1)exit(11);//error
