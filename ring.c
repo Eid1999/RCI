@@ -65,6 +65,7 @@ int main(int argc,char* argv[])
 	i.atalho.ip=NULL;
 	i.next.fd=-1;
 	i.prec.fd=-1;
+	i.fdTCP=-1;
 
 	//COMANDO NEW
 /*	printf("Crie um anel ou aperte enter para acender a interface do utilizador:\n");*/

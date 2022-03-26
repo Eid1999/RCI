@@ -8,6 +8,7 @@ anel interface (anel i){
        int j=0;
    	 char *opt, str[50];
    	 no p;
+   	 int fbits,pbits,lbits;
 	//RECEBE OS COMANDO
 	INTERFACE:
 	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
@@ -41,8 +42,11 @@ anel interface (anel i){
 		c = strtok (NULL, " ");
 		j++;
 	 }
-	
-
+	 
+	fbits=(strlen(opt)+strlen(i.eu.ip)+strlen(i.eu.porto)+16);
+	pbits=(strlen(opt)+strlen(i.eu.ip)+strlen(i.eu.porto)+10);
+	if(i.next.ip!=NULL){
+	lbits=(strlen(opt)+strlen(i.prec.ip)+strlen(i.prec.porto)+10);}
 	//COMANDO FIND
 	if(strcmp(opt,"n")==0) return i;
 	else if(strcmp(opt,"f")==0)
@@ -51,8 +55,8 @@ anel interface (anel i){
 		if(i.next.ip==NULL)exit(0);//ANEL DE UM SÓ NÓ
 		if(p.chave==i.eu.chave){printf("ES TU");return i;}//ES TU
 		opt="FND";
-		if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,34,p.chave,i.n_find);}//PROCURA POR ATALHO
-		else {i.next.fd=mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find,i.next.fd);}//PROCURA PELO SUCESSOR
+		if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,i.n_find);}//PROCURA POR ATALHO
+		else {i.next.fd=mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);}//PROCURA PELO SUCESSOR
 	
 	}
 	//COMANDO BENTRY
@@ -61,7 +65,8 @@ anel interface (anel i){
 			mensagem_udp(opt,p,i.eu,8,p.chave,0);
 		}
 	else if(strcmp(opt,"p")==0) {
-		if(j!=4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
+		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
+		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("ES TU");return i;}//ES TU
 		i.prec.porto= (char*) malloc(50);
 		i.prec.ip= (char*) malloc(50);
 		//SALVA PRECESSOR
@@ -70,22 +75,24 @@ anel interface (anel i){
 		memcpy(i.prec.porto,p.porto,50);
 		
 		opt="SELF";
-		i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,24,0,0,i.prec.fd);//MENSAGEM COM AS SUAS INFORMAÇOES AO SEU NOVO PRECESSOR
+		i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,0,0,i.prec.fd);//MENSAGEM COM AS SUAS INFORMAÇOES AO SEU NOVO PRECESSOR
+		return i;
 		     
 	}
 	//COMANDO CHORD
 	else if(strcmp(opt,"c")==0) {
 		
-		if(j!=4){printf("\nComando invalido\n");return i;}//ERRO NO COMANDO
+		if(j<4){printf("\nComando invalido\n");return i;}//ERRO NO COMANDO
 		i.atalho.porto= (char*) malloc(50);
 		i.atalho.ip= (char*) malloc(50);
 		//SALVA ATALHO
 		i.atalho.chave=p.chave;
 		memcpy(i.atalho.ip,p.ip,50);
 		memcpy(i.atalho.porto,p.porto,50);
-		mensagem_udp("EMPTY",i.atalho,i.eu,0,0,0); // CONECTA AO ATALHO  
+		mensagem_udp("EMPTY",i.atalho,i.eu,0,0,0); // CONECTA AO ATALHO
+		return i;
 	}
-	//COMANDO ECHORD
+	//COMANDO DCHORD
 	else if(strcmp(opt,"d")==0) {
 		if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);i.atalho.ip=NULL;i.atalho.porto=NULL;}
 	}
@@ -97,7 +104,7 @@ anel interface (anel i){
 		if(i.prec.ip!=NULL)printf("\nINFORMAÇÃO PRECESSOR: %d %s %s\n",i.prec.chave,i.prec.ip,i.prec.porto);
 		if(i.atalho.ip!=NULL)printf("\nINFORMAÇÃO ATALHO: %d %s %s \n",i.atalho.chave,i.atalho.ip,i.atalho.porto);
 	}
-	//COMANDO EXIT?????????????(MESMA INICIAL Q O ECHORD)
+	//COMANDO EXIT	
 	else if(strcmp(opt,"e")==0){
 		//LIMPA INFORMAÇOES
 		if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);}
@@ -111,7 +118,7 @@ anel interface (anel i){
 	//COMANDO LEAVE
 	else if(strcmp(opt,"l")==0){
 		opt="PRED";
-		if(i.next.ip!=NULL)mensagem_tcp(opt,i.next,i.prec,24,0,0,i.next.fd);//AVISA O SUCESSOR DAS INFORMAÇOES DO PRECESSOR
+		if(i.next.ip!=NULL)mensagem_tcp(opt,i.next,i.prec,lbits,0,0,i.next.fd);//AVISA O SUCESSOR DAS INFORMAÇOES DO PRECESSOR
 		//LIMPA INFORMAÇOES
 		 if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);i.prec.ip=NULL;i.prec.porto=NULL;}
 		if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);i.next.ip=NULL;i.next.porto=NULL;}
@@ -130,7 +137,7 @@ anel interface (anel i){
 
 	
 	else{ printf("\nComando invalido\n");}
-	if(i.next.ip==NULL) goto INTERFACE;
+	if(i.next.ip==NULL&&i.fdTCP==-1) goto INTERFACE;
 
 	return i;
 }

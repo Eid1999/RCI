@@ -8,6 +8,7 @@ anel sub_processo(anel i, char buffer[])
 	no p;
 	p.porto= (char*) malloc(50);
 	p.ip= (char*) malloc(50);
+	int pbits2,pbits,fbits,fbits2;
 
 
 	c = strtok(buffer, " ");
@@ -44,6 +45,12 @@ anel sub_processo(anel i, char buffer[])
 		j++;
 	}
 	
+	fbits=(strlen(opt)+strlen(i.eu.ip)+strlen(i.eu.porto)+16);
+	fbits2=(strlen(opt)+strlen(p.ip)+strlen(p.porto)+16);
+	pbits=(strlen(opt)+strlen(i.eu.ip)+strlen(i.eu.porto)+10);
+	pbits2=(strlen(opt)+strlen(p.ip)+strlen(p.porto)+10);
+	
+	
 	//PROCESSO SELF, USADO NO LEAVE E PENTRY
 	if (strcmp(opt,"SELF")==0)
 	{
@@ -58,10 +65,12 @@ anel sub_processo(anel i, char buffer[])
 			memcpy(i.prec.ip,p.ip,50);
 			i.prec.chave=p.chave;
 			opt="SELF";
-			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,24,0,0,-1);
+/*			i.next.fd=mensagem_tcp(opt,p,i.eu,-1,0,0,-1);*/
+			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,0,0,-1);
 			memcpy(i.next.porto,p.porto,50);
 			memcpy(i.next.ip,i.prec.ip,50);
 			i.next.chave=i.prec.chave;
+
 
 		}
 		
@@ -73,16 +82,19 @@ anel sub_processo(anel i, char buffer[])
 			memcpy(i.next.ip,p.ip,50);
 			memcpy(i.next.porto,p.porto,50);
 			i.next.chave=p.chave;
+/*			i.next.fd=mensagem_tcp(opt,i.next,i.eu,-1,0,0,-1);*/
 
 		}
 		
 		else//PRIMEIRA ETAPA DO PENTRY E ULTIMA DO LEAVE 
 		{
 			opt="PRED";
-			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))/*DIFERENCIA O PROCESSO DO PENTRY OU LEAVE*/mensagem_tcp(opt,i.next,p,24,0,0,-1);
+/*			i.next.fd=mensagem_tcp(opt,p,i.eu,-1,0,0,-1);*/
+			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))/*DIFERENCIA O PROCESSO DO PENTRY OU LEAVE*/mensagem_tcp(opt,i.next,p,pbits2,0,0,-1);
 			memcpy(i.next.ip,p.ip,50);
 			memcpy(i.next.porto,p.porto,50);
 			i.next.chave=p.chave;
+			
 			return i;
 		} 
 
@@ -100,7 +112,7 @@ anel sub_processo(anel i, char buffer[])
 			memcpy(i.prec.ip,p.ip,50);
 			i.prec.chave=p.chave;
 			i.prec.fd=-1;
-			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,24,0,0,-1);
+			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,0,0,-1);
 		}
 		else// LEAVE COM UM ANEL COM DOIS NÓS
 		{
@@ -118,21 +130,21 @@ anel sub_processo(anel i, char buffer[])
 		if(k==i.eu.chave)//VERIFICA SE É O NÓ PROCURADO 
 		{
 			opt="RSP";//INICIA PROCESSO DE RESPOSTA DE SUCESSO
-			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,34,p.chave,i.n_find);}//PROCURA O MENOR CAMINHO, ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find,i.next.fd);}
+			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,i.n_find);}//PROCURA O MENOR CAMINHO, ATALHO OU SUCESSOR
+			else {mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);}
 			
 		}
 		else if(d(i.eu.chave,k)<d(i.next.chave,k))//VERIFICA SE O NÓ NÃO SE ENCONTRA NO ANEL
 		{
 			opt="RSP";//INICIA PROCESSO DE RESPOSTA COM MENSAGEM DA INEXISTENCIA
-			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,p,34,p.chave,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,p,34,p.chave,i.n_find,i.next.fd);}
+			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,p,fbits2,p.chave,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
+			else {mensagem_tcp(opt,i.next,p,fbits2,p.chave,i.n_find,i.next.fd);}
 		}
 		else
 		{
 			opt="FND";
-			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,34,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find,i.next.fd);}
+			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,fbits2,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
+			else {mensagem_tcp(opt,i.next,p,fbits2,k,i.n_find,i.next.fd);}
 		}
 		return i;
 	}
@@ -152,8 +164,8 @@ anel sub_processo(anel i, char buffer[])
 		else//PROCURA O NO QUE INICIALIZOU O FIND
 		{
 
-			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,34,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find,i.next.fd);}
+			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,fbits2,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
+			else {mensagem_tcp(opt,i.next,p,fbits2,k,i.n_find,i.next.fd);}
 			
 		}
 	}
