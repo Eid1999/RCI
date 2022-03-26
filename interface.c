@@ -1,4 +1,4 @@
-
+//COMO ESTABELECER CONECÇÃO SEM WRITE(SEGUNDA ETAPA PENTRY, CONECÇÃO COM SUCESSOR)????????????????????????????????????????????????????????????????????????????????
 #include "Anel.h"
 
 anel interface (anel i){
@@ -12,8 +12,9 @@ anel interface (anel i){
 	//RECEBE OS COMANDO
 	INTERFACE:
 	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
+	fflush(stdin);
+	while(fgets(str, 50, stdin)==NULL);
 	
-	fgets(str, 50, stdin);
 	c = strtok(str, " ");
 	
 	
@@ -52,7 +53,7 @@ anel interface (anel i){
 	else if(strcmp(opt,"f")==0)
 	{
 		if(j!=2){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
-		if(i.next.ip==NULL)exit(0);//ANEL DE UM SÓ NÓ
+		if(i.next.ip==NULL)exit(20);//ANEL DE UM SÓ NÓ
 		if(p.chave==i.eu.chave){printf("ES TU");return i;}//ES TU
 		opt="FND";
 		if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,i.n_find);}//PROCURA POR ATALHO
@@ -62,7 +63,7 @@ anel interface (anel i){
 	//COMANDO BENTRY
 	else if(strcmp(opt,"b")==0) {
 			opt="EFND";
-			mensagem_udp(opt,p,i.eu,8,p.chave,0);
+			mensagem_udp(opt,p,i.eu,8,p.chave,-1);
 		}
 	else if(strcmp(opt,"p")==0) {
 		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
@@ -75,7 +76,7 @@ anel interface (anel i){
 		memcpy(i.prec.porto,p.porto,50);
 		
 		opt="SELF";
-		i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,0,0,i.prec.fd);//MENSAGEM COM AS SUAS INFORMAÇOES AO SEU NOVO PRECESSOR
+		i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,-1,0,i.prec.fd);//MENSAGEM COM AS SUAS INFORMAÇOES AO SEU NOVO PRECESSOR
 		return i;
 		     
 	}
@@ -89,7 +90,7 @@ anel interface (anel i){
 		i.atalho.chave=p.chave;
 		memcpy(i.atalho.ip,p.ip,50);
 		memcpy(i.atalho.porto,p.porto,50);
-		mensagem_udp("EMPTY",i.atalho,i.eu,0,0,0); // CONECTA AO ATALHO
+/*		mensagem_udp("EMPTY",i.atalho,i.eu,-1,0,0); // CONECTA AO ATALHO*/
 		return i;
 	}
 	//COMANDO DCHORD
@@ -111,28 +112,39 @@ anel interface (anel i){
 		if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);}
 		if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);}
 		//FECHA SOCKET
-		close(i.fdTCP);
-		close(i.fdUDP);
-		exit(0);
-	}
-	//COMANDO LEAVE
-	else if(strcmp(opt,"l")==0){
-		opt="PRED";
-		if(i.next.ip!=NULL)mensagem_tcp(opt,i.next,i.prec,lbits,0,0,i.next.fd);//AVISA O SUCESSOR DAS INFORMAÇOES DO PRECESSOR
-		//LIMPA INFORMAÇOES
-		 if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);i.prec.ip=NULL;i.prec.porto=NULL;}
-		if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);i.next.ip=NULL;i.next.porto=NULL;}
-		if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);i.atalho.ip=NULL;i.atalho.porto=NULL;}
-		i.leave=1;
-		if(i.next.fd!=-1)
+		if(i.next.fd!=-1)//FECHA LIGAÇAO CLIENTE-SOCKETS
 		{
 			close(i.next.fd);
 			close(i.prec.fd);
 		}
 		close(i.fdTCP);
 		close(i.fdUDP);
+		exit(10);
+	}
+	//COMANDO LEAVE
+	else if(strcmp(opt,"l")==0){
+		opt="PRED";
+		if(i.next.ip!=NULL)mensagem_tcp(opt,i.next,i.prec,lbits,-1,0,i.next.fd);//AVISA O SUCESSOR DAS INFORMAÇOES DO PRECESSOR
+		//LIMPA INFORMAÇOES
+		 if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);i.prec.ip=NULL;i.prec.porto=NULL;}
+		if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);i.next.ip=NULL;i.next.porto=NULL;}
+		if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);i.atalho.ip=NULL;i.atalho.porto=NULL;}
+		i.leave=1;
+		if(i.next.fd!=-1)//FECHA LIGAÇAO CLIENTE-SOCKETS
+		{
+			close(i.next.fd);
+			close(i.prec.fd);
+		}
+		//FECHA SOCKETS
+		if(i.fdTCP==-1){
+			close(i.fdTCP);
+			close(i.fdUDP);
+		}
+		return i;
 		      
 	}
+	
+	
 	else if(strcmp(opt,"-h")==0)printf("\nComandos disponiveis:\n\n n->new \n\n p [CHAVE] [IP] [PORTO]->pentry\n\n b[CHAVE](EM CONSTRUÇAO)->bentry \n\n f [CHAVE]->find\n \n l->leave\n\n e->exit \n\n c->chord\n\n d->delete chord \n\n s->show\n\n");
 
 	

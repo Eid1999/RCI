@@ -117,7 +117,7 @@ int main(int argc,char* argv[])
 		FD_SET(STDIN, &rset);
 
 		nready = select(maxfdp1, &rset, NULL, NULL, NULL);
-		if(nready<=0)/*error*/exit(1);
+		if(nready<=0)/*error*/exit(19);
 
 		// SE TIVER SINAL INPUT DO USUARIO ENTRA NO INTERFACE
 		if (FD_ISSET(STDIN, &rset)){
@@ -128,9 +128,9 @@ int main(int argc,char* argv[])
 		 //SE TIVER SINAL TCP, ACEITA
 		if (FD_ISSET(i.fdTCP, &rset)) {
 			addrlen_tcp=sizeof(addr_tcp);
-			if((newfd=accept(i.fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(0);
+			if((newfd=accept(i.fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(20);
 			j=read(newfd,buffer,128);
-			if(j==-1)/*error*/exit(2);
+			if(j==-1)/*error*/exit(21);
 			printf("%s",buffer);
 			if(strncmp("FND",buffer,3)==0|| strncmp("RSP",buffer,3)==0){
 			newfd=write(newfd,"ACK\n",5);}
@@ -141,13 +141,13 @@ int main(int argc,char* argv[])
 		if (FD_ISSET(i.fdUDP, &rset)) {
 			addrlen_udp=sizeof(addr_udp);
 			nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);
-			if(nread==-1)/*error*/exit(4);
+			if(nread==-1)/*error*/exit(30);
 			if(strncmp("FND",buffer,3)|| strncmp("RSP",buffer,3))sendto(i.fdUDP,"ACK",nread,0,&addr_udp,addrlen_udp);
 			printf("%s",buffer);
 			i=sub_processo(i,buffer);
 		}
 		//PARTE DO COMANDO LEAVE
-		if(i.leave==1){close(i.fdUDP);close(i.fdTCP);goto novo;}
+		if(i.leave==1){close(i.fdUDP);close(i.fdTCP);i.leave=0;goto novo;}
 	}
 }   
 

@@ -66,7 +66,7 @@ anel sub_processo(anel i, char buffer[])
 			i.prec.chave=p.chave;
 			opt="SELF";
 /*			i.next.fd=mensagem_tcp(opt,p,i.eu,-1,0,0,-1);*/
-			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,0,0,-1);
+			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,-1,0,-1);
 			memcpy(i.next.porto,p.porto,50);
 			memcpy(i.next.ip,i.prec.ip,50);
 			i.next.chave=i.prec.chave;
@@ -90,10 +90,11 @@ anel sub_processo(anel i, char buffer[])
 		{
 			opt="PRED";
 /*			i.next.fd=mensagem_tcp(opt,p,i.eu,-1,0,0,-1);*/
-			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))/*DIFERENCIA O PROCESSO DO PENTRY OU LEAVE*/mensagem_tcp(opt,i.next,p,pbits2,0,0,-1);
+			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))/*DIFERENCIA O PROCESSO DO PENTRY OU LEAVE*/mensagem_tcp(opt,i.next,p,pbits2,-1,0,i.next.fd);
 			memcpy(i.next.ip,p.ip,50);
 			memcpy(i.next.porto,p.porto,50);
 			i.next.chave=p.chave;
+			i.next.fd=-1;
 			
 			return i;
 		} 
@@ -112,7 +113,7 @@ anel sub_processo(anel i, char buffer[])
 			memcpy(i.prec.ip,p.ip,50);
 			i.prec.chave=p.chave;
 			i.prec.fd=-1;
-			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,0,0,-1);
+			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,-1,0,-1);
 		}
 		else// LEAVE COM UM ANEL COM DOIS NÓS
 		{
