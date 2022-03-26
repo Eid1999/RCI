@@ -50,7 +50,7 @@ anel interface (anel i){
 		if(p.chave==i.eu.chave){printf("ES TU");return i;}//ES TU
 		opt="FND";
 		if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,34,p.chave,i.n_find);}//PROCURA POR ATALHO
-		else {mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find);}//PROCURA PELO SUCESSOR
+		else {i.next.fd=mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find,i.next.fd);}//PROCURA PELO SUCESSOR
 	
 	}
 	//COMANDO BENTRY
@@ -68,7 +68,7 @@ anel interface (anel i){
 		memcpy(i.prec.porto,p.porto,50);
 		
 		opt="SELF";
-		mensagem_tcp(opt,i.prec,i.eu,24,0,0);//MENSAGEM COM AS SUAS INFORMAÇOES AO SEU NOVO PRECESSOR
+		i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,24,0,0,i.prec.fd);//MENSAGEM COM AS SUAS INFORMAÇOES AO SEU NOVO PRECESSOR
 		     
 	}
 	//COMANDO CHORD
@@ -109,13 +109,19 @@ anel interface (anel i){
 	//COMANDO LEAVE
 	else if(strcmp(opt,"l")==0){
 		opt="PRED";
-		if(i.next.ip!=NULL)mensagem_tcp(opt,i.next,i.prec,24,0,0);//AVISA O SUCESSOR DAS INFORMAÇOES DO PRECESSOR
+		if(i.next.ip!=NULL)mensagem_tcp(opt,i.next,i.prec,24,0,0,i.next.fd);//AVISA O SUCESSOR DAS INFORMAÇOES DO PRECESSOR
 		//LIMPA INFORMAÇOES
 		 if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);i.prec.ip=NULL;i.prec.porto=NULL;}
 		if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);i.next.ip=NULL;i.next.porto=NULL;}
 		if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);i.atalho.ip=NULL;i.atalho.porto=NULL;}
 		i.leave=1;
-	
+		if(i.next.fd!=-1)
+		{
+			close(i.next.fd);
+			close(i.prec.fd);
+		}
+		close(i.fdTCP);
+		close(i.fdUDP);
 		      
 	}
 

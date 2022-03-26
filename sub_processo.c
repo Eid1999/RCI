@@ -58,7 +58,7 @@ anel sub_processo(anel i, char buffer[])
 			memcpy(i.prec.ip,p.ip,50);
 			i.prec.chave=p.chave;
 			opt="SELF";
-			mensagem_tcp(opt,i.prec,i.eu,24,0,0);
+			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,24,0,0,-1);
 			memcpy(i.next.porto,p.porto,50);
 			memcpy(i.next.ip,i.prec.ip,50);
 			i.next.chave=i.prec.chave;
@@ -79,7 +79,7 @@ anel sub_processo(anel i, char buffer[])
 		else//PRIMEIRA ETAPA DO PENTRY E ULTIMA DO LEAVE 
 		{
 			opt="PRED";
-			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))/*DIFERENCIA O PROCESSO DO PENTRY OU LEAVE*/mensagem_tcp(opt,i.next,p,24,0,0);
+			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))/*DIFERENCIA O PROCESSO DO PENTRY OU LEAVE*/mensagem_tcp(opt,i.next,p,24,0,0,-1);
 			memcpy(i.next.ip,p.ip,50);
 			memcpy(i.next.porto,p.porto,50);
 			i.next.chave=p.chave;
@@ -99,7 +99,8 @@ anel sub_processo(anel i, char buffer[])
 			memcpy(i.prec.porto,p.porto,50);
 			memcpy(i.prec.ip,p.ip,50);
 			i.prec.chave=p.chave;
-			mensagem_tcp(opt,i.prec,i.eu,24,0,0);
+			i.prec.fd=-1;
+			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,24,0,0,-1);
 		}
 		else// LEAVE COM UM ANEL COM DOIS NÓS
 		{
@@ -118,20 +119,20 @@ anel sub_processo(anel i, char buffer[])
 		{
 			opt="RSP";//INICIA PROCESSO DE RESPOSTA DE SUCESSO
 			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,34,p.chave,i.n_find);}//PROCURA O MENOR CAMINHO, ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find);}
+			else {mensagem_tcp(opt,i.next,i.eu,34,p.chave,i.n_find,i.next.fd);}
 			
 		}
 		else if(d(i.eu.chave,k)<d(i.next.chave,k))//VERIFICA SE O NÓ NÃO SE ENCONTRA NO ANEL
 		{
 			opt="RSP";//INICIA PROCESSO DE RESPOSTA COM MENSAGEM DA INEXISTENCIA
 			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,p,34,p.chave,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,p,34,p.chave,i.n_find);}
+			else {mensagem_tcp(opt,i.next,p,34,p.chave,i.n_find,i.next.fd);}
 		}
 		else
 		{
 			opt="FND";
 			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,34,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find);}
+			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find,i.next.fd);}
 		}
 		return i;
 	}
@@ -152,7 +153,7 @@ anel sub_processo(anel i, char buffer[])
 		{
 
 			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,34,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find);}
+			else {mensagem_tcp(opt,i.next,p,34,k,i.n_find,i.next.fd);}
 			
 		}
 	}

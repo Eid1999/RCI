@@ -63,6 +63,8 @@ int main(int argc,char* argv[])
 	i.next.ip=NULL; 
 	i.prec.ip=NULL;
 	i.atalho.ip=NULL;
+	i.next.fd=-1;
+	i.prec.fd=-1;
 
 	//COMANDO NEW
 	printf("Crie um anel ou aperte enter para acender a interface do utilizador:\n");
@@ -131,7 +133,6 @@ int main(int argc,char* argv[])
 			printf("%s",buffer);
 			if(strncmp("FND",buffer,3)==0|| strncmp("RSP",buffer,3)==0){
 			newfd=write(newfd,"ACK\n",5);}
-			close(newfd);
 			i=sub_processo(i,buffer);
 
 		}
