@@ -57,7 +57,7 @@ anel interface (anel i){
 		if(p.chave==i.eu.chave){printf("ES TU");return i;}//ES TU
 		opt="FND";
 		if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,i.n_find);}//PROCURA POR ATALHO
-		else {i.next.fd=mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);}//PROCURA PELO SUCESSOR
+		else {mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);}//PROCURA PELO SUCESSOR
 	
 	}
 	//COMANDO BENTRY
@@ -133,6 +133,9 @@ anel interface (anel i){
 		if(i.next.fd!=-1)//FECHA LIGAÇAO CLIENTE-SOCKETS
 		{
 			close(i.next.fd);
+		}
+		if(i.prec.fd!=-1)
+		{
 			close(i.prec.fd);
 		}
 		//FECHA SOCKETS
