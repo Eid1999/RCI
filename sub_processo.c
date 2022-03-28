@@ -3,7 +3,7 @@
 anel sub_processo(anel i, char buffer[])
 {
 	char *c;
-	int j=0,k=0;
+	int j=0,k=0,n_find;
 	char *opt;
 	no p;
 	p.porto= (char*) malloc(50);
@@ -32,7 +32,7 @@ anel sub_processo(anel i, char buffer[])
 		//VARIAVEIS DO FIND
 		case 4:
 		k=p.chave;
-		sscanf(p.ip, "%d", &i.n_find);
+		sscanf(p.ip, "%d", &n_find);
 		sscanf(p.porto,"%d",&p.chave);
 		p.ip=c;
 		break;
@@ -131,21 +131,21 @@ anel sub_processo(anel i, char buffer[])
 		if(k==i.eu.chave)//VERIFICA SE É O NÓ PROCURADO 
 		{
 			opt="RSP";//INICIA PROCESSO DE RESPOSTA DE SUCESSO
-			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,i.n_find);}//PROCURA O MENOR CAMINHO, ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);}
+			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,n_find);}//PROCURA O MENOR CAMINHO, ATALHO OU SUCESSOR
+			else {mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,n_find,i.next.fd);}
 			
 		}
 		else if(d(i.eu.chave,k)<d(i.next.chave,k))//VERIFICA SE O NÓ NÃO SE ENCONTRA NO ANEL
 		{
 			opt="RSP";//INICIA PROCESSO DE RESPOSTA COM MENSAGEM DA INEXISTENCIA
-			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,p,fbits2,p.chave,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,p,fbits2,p.chave,i.n_find,i.next.fd);}
+			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,p,fbits2,p.chave,n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
+			else {mensagem_tcp(opt,i.next,p,fbits2,p.chave,n_find,i.next.fd);}
 		}
 		else
 		{
 			opt="FND";
-			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,fbits2,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,p,fbits2,k,i.n_find,i.next.fd);}
+			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,fbits2,k,n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
+			else {mensagem_tcp(opt,i.next,p,fbits2,k,n_find,i.next.fd);}
 		}
 		return i;
 	}
@@ -154,11 +154,12 @@ anel sub_processo(anel i, char buffer[])
 	if (strcmp(opt,"RSP")==0)
 	{
 		opt="RSP";
-		if(k==i.eu.chave)//VERIFICA SE O NÓ É O PROCURADO
+		if(k==i.eu.chave&&n_find==i.n_find)//VERIFICA SE O NÓ É O PROCURADO
 		{
 			if(p.chave==k)printf("Nó não existe no anel");//MENSAGEM DE INEXISTENCIA
-			else printf("Nó %d: (%s : %s)",p.chave, p.ip,p.porto);//MENSAGEM DE SUCESSO
+			else printf("Nó %d: (%s : %s) da chamada %d",p.chave, p.ip,p.porto,i.n_find);//MENSAGEM DE SUCESSO
 			fflush(stdout);
+			i.n_find++;
 			
 		}
 		

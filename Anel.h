@@ -37,7 +37,7 @@ typedef struct _anel {
 
 char *ACK(int fdTCP, int fdUDP);//PROGRAMA PARA VALIDAÇÃO DE RECEBIMENTO
 anel sub_processo(anel i, char buffer[]);//SUB PROCESSOS(FORA DO CONTROLE DO USUARIO)
-anel interface(anel i);//INTEFACE DO USUARIO
+anel interface(anel i,char str[]);//INTEFACE DO USUARIO
 int mensagem_tcp(char *opt, no dest, no envio,int nbits,int k, int n_find,int fd);//MESSAGEM TCP
 void mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find);//MENSAGEM UDP
 int d(int d1,int d2);//CALCULAR A DISTANCIA

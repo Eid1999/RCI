@@ -1,19 +1,19 @@
 //COMO ESTABELECER CONECÇÃO SEM WRITE(SEGUNDA ETAPA PENTRY, CONECÇÃO COM SUCESSOR)????????????????????????????????????????????????????????????????????????????????
 #include "Anel.h"
 
-anel interface (anel i){
+anel interface (anel i, char str[]){
 
 
        char *c;
        int j=0;
-   	 char *opt, str[50];
+   	 char *opt;
    	 no p;
    	 int fbits,pbits,lbits;
 	//RECEBE OS COMANDO
-	INTERFACE:
-	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
-	fflush(stdin);
-	while(fgets(str, 50, stdin)==NULL);
+/*	INTERFACE:*/
+/*	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");*/
+/*	fflush(stdin);*/
+/*	while(fgets(str, 50, stdin)==NULL);*/
 	
 	c = strtok(str, " ");
 	
@@ -49,7 +49,7 @@ anel interface (anel i){
 	if(i.next.ip!=NULL){
 	lbits=(strlen(opt)+strlen(i.prec.ip)+strlen(i.prec.porto)+10);}
 	//COMANDO FIND
-	if(strcmp(opt,"n")==0) return i;
+	if(strcmp(opt,"n")==0){i.fdTCP=0; return i;}
 	else if(strcmp(opt,"f")==0)
 	{
 		if(j!=2){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
@@ -139,7 +139,7 @@ anel interface (anel i){
 			close(i.prec.fd);
 		}
 		//FECHA SOCKETS
-		if(i.fdTCP==-1){
+		if(i.fdTCP!=-1){
 			close(i.fdTCP);
 			close(i.fdUDP);
 		}
@@ -152,7 +152,7 @@ anel interface (anel i){
 
 	
 	else{ printf("\nComando invalido\n");}
-	if(i.next.ip==NULL&&i.fdTCP==-1) goto INTERFACE;
+/*	if(i.next.ip==NULL&&i.fdTCP==-1) goto INTERFACE;*/
 
 	return i;
 }

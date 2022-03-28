@@ -67,13 +67,14 @@ int main(int argc,char* argv[])
 	i.prec.fd=-1;
 	i.fdTCP=-1;
 
-	//COMANDO NEW
-/*	printf("Crie um anel ou aperte enter para acender a interface do utilizador:\n");*/
-/*	fgets(str, 50, stdin);*/
-/*	fflush(stdout);*/
-	i=interface(i);
-
-	/* create listening TCP socket */
+	//INTERFACE
+	do{
+		printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
+		fflush(stdin);
+		fgets(str, 50, stdin);
+		i=interface(i,str);
+	}while((i.prec.ip==NULL && i.fdTCP==-1));
+	/* TCP SOCKET */
 	if((i.fdTCP=socket(AF_INET,SOCK_STREAM,0))==-1)exit(11);//error
 
 	memset(&hints,0,sizeof hints);
@@ -90,7 +91,7 @@ int main(int argc,char* argv[])
 	if(listen(i.fdTCP,5)==-1)/*error*/exit(15);
 
 
-	/* create UDP socket */
+	/* UDP SOCKET */
 	if((i.fdUDP=socket(AF_INET,SOCK_DGRAM,0))==-1)exit(16);//error
 	memset(&hints_udp,0,sizeof hints_udp);
 	hints_udp.ai_family=AF_INET;//IPv4z
@@ -108,7 +109,7 @@ int main(int argc,char* argv[])
 
 
 	
-	printf("\nAperte enter para acender a interface do utilizador:\n");
+	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
 	for (;;) {FD_ZERO(&rset);// LIMPA
 
 		// PROCURA DE SINAL TCP, UDP E DO USUARIO
@@ -122,8 +123,8 @@ int main(int argc,char* argv[])
 		// SE TIVER SINAL INPUT DO USUARIO ENTRA NO INTERFACE
 		if (FD_ISSET(STDIN, &rset)){
 			fgets(str, 50, stdin);
-			i=interface(i);
-			printf("\nAperte enter para acender a interface do utilizador:\n");
+			i=interface(i,str);
+			if(i.leave!=1) printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
 		}
 		 //SE TIVER SINAL TCP, ACEITA
 		if (FD_ISSET(i.fdTCP, &rset)) {
