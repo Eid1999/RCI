@@ -64,6 +64,7 @@ anel sub_processo(anel i, char buffer[])
 			memcpy(i.prec.porto,p.porto,50);
 			memcpy(i.prec.ip,p.ip,50);
 			i.prec.chave=p.chave;
+			i.next.chave=p.chave;
 			opt="SELF";
 			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,-1,0,-1);
 			i.next.fd=i.AUX;
@@ -170,7 +171,7 @@ anel sub_processo(anel i, char buffer[])
 		{
 
 			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,fbits2,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,p,fbits2,k,i.n_find,i.next.fd);}
+			else {mensagem_tcp(opt,i.next,p,fbits2,k,n_find,i.next.fd);}
 			
 		}
 	}

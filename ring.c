@@ -66,6 +66,7 @@ int main(int argc,char* argv[])
 	i.next.fd=-1;
 	i.prec.fd=-1;
 	i.fdTCP=-1;
+	i.fdUDP=-1;
 
 	//INTERFACE
 	do{
@@ -124,6 +125,7 @@ int main(int argc,char* argv[])
 		if(i.prec.fd!=-1){FD_SET(i.prec.fd, &rset);maxfdp1 = max(i.prec.fd, maxfdp1)+1 ;}
 		FD_SET(i.fdUDP, &rset);
 		FD_SET(STDIN, &rset);
+		
 		nready = select(maxfdp1, &rset, NULL, NULL, NULL);
 		if(nready<=0)/*error*/exit(19);
 		

@@ -7,7 +7,7 @@ void mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 	struct addrinfo hints,*res;
 	int fd,errcode;
 	ssize_t n;
-	char ptr[nbits],*buffer;
+	char ptr[nbits],*buffer		;
 	socklen_t addrlen;
 	struct sockaddr addr;
 	
