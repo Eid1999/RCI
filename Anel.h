@@ -31,6 +31,7 @@ typedef struct _anel {
     int n_find;
     int fdTCP;
     int fdUDP;
+    int AUX;
    
     
 }anel;

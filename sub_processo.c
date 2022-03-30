@@ -66,6 +66,7 @@ anel sub_processo(anel i, char buffer[])
 			i.prec.chave=p.chave;
 			opt="SELF";
 			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,-1,0,-1);
+			i.next.fd=i.AUX;
 			memcpy(i.next.porto,p.porto,50);
 			memcpy(i.next.ip,i.prec.ip,50);
 		}
@@ -88,7 +89,9 @@ anel sub_processo(anel i, char buffer[])
 			memcpy(i.next.ip,p.ip,50);
 			memcpy(i.next.porto,p.porto,50);
 			i.next.chave=p.chave;
+			close(i.next.fd);
 			i.next.fd=-1;
+			i.next.fd=i.AUX;
 			
 			return i;
 		} 

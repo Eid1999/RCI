@@ -144,7 +144,7 @@ int main(int argc,char* argv[])
 				j=read(newfd,buffer,128);
 				if(j==-1)/*error*/exit(21);
 				printf("%s",buffer);
-				if(strncmp("SELF",buffer,4)==0){i.next.fd=newfd;}
+				if(strncmp("SELF",buffer,4)==0){i.AUX=newfd;}
 				i=sub_processo(i,buffer);
 				break;
 			}
