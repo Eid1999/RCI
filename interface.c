@@ -48,8 +48,10 @@ anel interface (anel i, char str[]){
 	pbits=(strlen(opt)+strlen(i.eu.ip)+strlen(i.eu.porto)+10);
 	if(i.next.ip!=NULL){
 	lbits=(strlen(opt)+strlen(i.prec.ip)+strlen(i.prec.porto)+10);}
-	//COMANDO FIND
+	
 	if(strcmp(opt,"n")==0){i.fdTCP=0; return i;}
+	
+	//COMANDO FIND
 	else if(strcmp(opt,"f")==0)
 	{
 		if(j!=2){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO

@@ -104,51 +104,71 @@ int main(int argc,char* argv[])
 	freeaddrinfo(res);
 	
 	maxfdp1 = max(i.fdUDP, i.fdTCP) ;
+	maxfdp1 = max(i.prec.fd, maxfdp1) ;
 	maxfdp1=max(STDIN,maxfdp1)+1;
 
 
 
 	
-	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
-	for (;;) {FD_ZERO(&rset);// LIMPA
 
 		// PROCURA DE SINAL TCP, UDP E DO USUARIO
+		
+	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
+	for(;;)
+	{
+		if(i.leave==1){close(i.fdUDP);close(i.fdTCP);i.leave=0;goto novo;}//PARTE DO COMANDO LEAVE
+		
+		
+		FD_ZERO(&rset);// LIMPA
 		FD_SET(i.fdTCP, &rset);
+		if(i.prec.fd!=-1){FD_SET(i.prec.fd, &rset);maxfdp1 = max(i.prec.fd, maxfdp1)+1 ;}
 		FD_SET(i.fdUDP, &rset);
 		FD_SET(STDIN, &rset);
-
 		nready = select(maxfdp1, &rset, NULL, NULL, NULL);
 		if(nready<=0)/*error*/exit(19);
+		
+		for (;;) {
+			
 
-		// SE TIVER SINAL INPUT DO USUARIO ENTRA NO INTERFACE
-		if (FD_ISSET(STDIN, &rset)){
-			fgets(str, 50, stdin);
-			i=interface(i,str);
-			if(i.leave!=1) printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
+			// SE TIVER SINAL INPUT DO USUARIO ENTRA NO INTERFACE
+			if (FD_ISSET(STDIN, &rset)){
+				fgets(str, 50, stdin);
+				i=interface(i,str);
+				if(i.leave!=1) printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
+				break;
+			}
+			 //SE TIVER SINAL TCP, ACEITA
+			if (FD_ISSET(i.fdTCP, &rset)) {
+				addrlen_tcp=sizeof(addr_tcp);
+				if((newfd=accept(i.fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(20);
+				j=read(newfd,buffer,128);
+				if(j==-1)/*error*/exit(21);
+				printf("%s",buffer);
+				if(strncmp("SELF",buffer,4)==0){i.next.fd=newfd;}
+				i=sub_processo(i,buffer);
+				break;
+			}
+			//  SE TIVER SINAL UDP, ACEITA
+			if (FD_ISSET(i.fdUDP, &rset)) {
+				addrlen_udp=sizeof(addr_udp);
+				nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);
+				if(nread==-1)/*error*/exit(30);
+				if(strncmp("FND",buffer,3)|| strncmp("RSP",buffer,3))sendto(i.fdUDP,"ACK",nread,0,&addr_udp,addrlen_udp);
+				printf("%s",buffer);
+				i=sub_processo(i,buffer);
+				break;
+				
+			}
+			
+			if (FD_ISSET(i.prec.fd, &rset)) {
+				j=read(i.prec.fd,buffer,128);
+				if(j==-1)/*error*/exit(21);
+				printf("%s",buffer);
+				i=sub_processo(i,buffer);
+				break;
+			}
+			
 		}
-		 //SE TIVER SINAL TCP, ACEITA
-		if (FD_ISSET(i.fdTCP, &rset)) {
-			addrlen_tcp=sizeof(addr_tcp);
-			if((newfd=accept(i.fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(20);
-			j=read(newfd,buffer,128);
-			if(j==-1)/*error*/exit(21);
-			printf("%s",buffer);
-			if(strncmp("FND",buffer,3)==0|| strncmp("RSP",buffer,3)==0){
-			newfd=write(newfd,"ACK\n",5);}
-			i=sub_processo(i,buffer);
-
-		}
-		//  SE TIVER SINAL UDP, ACEITA
-		if (FD_ISSET(i.fdUDP, &rset)) {
-			addrlen_udp=sizeof(addr_udp);
-			nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);
-			if(nread==-1)/*error*/exit(30);
-			if(strncmp("FND",buffer,3)|| strncmp("RSP",buffer,3))sendto(i.fdUDP,"ACK",nread,0,&addr_udp,addrlen_udp);
-			printf("%s",buffer);
-			i=sub_processo(i,buffer);
-		}
-		//PARTE DO COMANDO LEAVE
-		if(i.leave==1){close(i.fdUDP);close(i.fdTCP);i.leave=0;goto novo;}
 	}
 }   
 
