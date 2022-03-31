@@ -12,7 +12,7 @@ char *ACK(int fdTCP, int fdUDP)//TROCAR PARA MENSAGENS
 	int nready;
 	struct timeval timer;
 	struct sockaddr addr_udp;
-	buffer= (char*) malloc(128);
+	buffer= (char*) malloc(4);
 	maxfdp1 = max(fdUDP, fdTCP)+1 ;
 	
 	for (;;)
@@ -31,7 +31,7 @@ char *ACK(int fdTCP, int fdUDP)//TROCAR PARA MENSAGENS
 		 //SE TIVER SINAL TCP, ACEITA
 		if (fdTCP!=0 && FD_ISSET(fdTCP, &rset)) 
 		{
-			j=read(fdTCP,buffer,128);
+			j=read(fdTCP,buffer,4);
 			if(j==-1)/*error*/exit(2);
 			if (strncmp("ACK",buffer,3)==0)return buffer;
 			
@@ -40,10 +40,11 @@ char *ACK(int fdTCP, int fdUDP)//TROCAR PARA MENSAGENS
 		if (fdUDP!=0 && FD_ISSET(fdUDP, &rset)) 
 		{
 			addrlen_udp=sizeof(addr_udp);
-			nread=recvfrom(fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);
+			nread=recvfrom(fdUDP,buffer,3,0, &addr_udp,&addrlen_udp);
 			if(nread==-1)/*error*/exit(4);
 			printf("%s",buffer);
 			if (strncmp("ACK",buffer,3)==0)return buffer;
+			if (strncmp("EPRED",buffer,3)==0)return buffer;
 		}
 		
 	}

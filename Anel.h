@@ -27,11 +27,22 @@ typedef struct _anel {
     no next;
     no prec;
     no atalho;
-    int leave;
-    int n_find;
-    int fdTCP;
-    int fdUDP;
-    int AUX;
+    
+     int fdTCP;//FD TCP DO SERVIDOR
+    int fdUDP;//FD UDP DO SERVIDOR
+    int AUX;//FD AUXILIAR
+    
+    //VARIAVEIS PARA O FIND
+    int n_find;//NUMERO DA PROCURA
+    int k;//CHAVE PROCURADA &&  FLAG PARA O BENTRY
+    
+    //VARIAVEIS PARA BENTRY
+    struct sockaddr addr;
+    socklen_t addrlen;
+    //
+    
+    int leave;//FLAG PARA COMANDO LEAVE
+    
    
     
 }anel;

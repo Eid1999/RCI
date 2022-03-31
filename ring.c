@@ -47,7 +47,7 @@ int main(int argc,char* argv[])
 	char  str[50];
 	int newfd;       
 	ssize_t j;
-	int maxfdp1;
+	int maxfdp1,maxfdp2;
 	anel i;
 
 
@@ -67,6 +67,7 @@ int main(int argc,char* argv[])
 	i.prec.fd=-1;
 	i.fdTCP=-1;
 	i.fdUDP=-1;
+/*	i.k=-1;*/
 
 	//INTERFACE
 	do{
@@ -90,6 +91,7 @@ int main(int argc,char* argv[])
 
 	if(bind(i.fdTCP,res->ai_addr,res->ai_addrlen)==-1)/*error*/exit(14);
 	if(listen(i.fdTCP,5)==-1)/*error*/exit(15);
+	freeaddrinfo(res);
 
 
 	/* UDP SOCKET */
@@ -99,14 +101,15 @@ int main(int argc,char* argv[])
 	hints_udp.ai_socktype=SOCK_DGRAM;//UDP socket
 	hints_udp.ai_flags=AI_PASSIVE;
 	if((errcode=getaddrinfo(NULL,i.eu.porto,&hints_udp,&res_udp))!=0)/*error*/exit(17);
-	if(bind(i.fdUDP,res_udp->ai_addr,res_udp->ai_addrlen)==-1)/*error*/exit(18);
+	if(bind(i.fdUDP,res_udp->ai_addr,res_udp->ai_addrlen)==-1)/*error*/exit(18);//BUG NESSA LINHA PENTRY APOS LEAVE
 
 
-	freeaddrinfo(res);
+	freeaddrinfo(res_udp);
 	
 	maxfdp1 = max(i.fdUDP, i.fdTCP) ;
 	maxfdp1 = max(i.prec.fd, maxfdp1) ;
 	maxfdp1=max(STDIN,maxfdp1)+1;
+	maxfdp2=maxfdp1;
 
 
 
@@ -117,16 +120,16 @@ int main(int argc,char* argv[])
 	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
 	for(;;)
 	{
-		if(i.leave==1){close(i.fdUDP);close(i.fdTCP);i.leave=0;goto novo;}//PARTE DO COMANDO LEAVE
+		if(i.leave==1){i.leave=0;goto novo;}//PARTE DO COMANDO LEAVE
 		
 		
 		FD_ZERO(&rset);// LIMPA
 		FD_SET(i.fdTCP, &rset);
-		if(i.prec.fd!=-1){FD_SET(i.prec.fd, &rset);maxfdp1 = max(i.prec.fd, maxfdp1)+1 ;}
+		if(i.prec.fd!=-1){FD_SET(i.prec.fd, &rset);maxfdp2 = max(i.prec.fd, maxfdp1)+1 ;}
 		FD_SET(i.fdUDP, &rset);
 		FD_SET(STDIN, &rset);
 		
-		nready = select(maxfdp1, &rset, NULL, NULL, NULL);
+		nready = select(maxfdp2, &rset, NULL, NULL, NULL);
 		if(nready<=0)/*error*/exit(19);
 		
 		for (;;) {
@@ -155,7 +158,8 @@ int main(int argc,char* argv[])
 				addrlen_udp=sizeof(addr_udp);
 				nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);
 				if(nread==-1)/*error*/exit(30);
-				if(strncmp("FND",buffer,3)|| strncmp("RSP",buffer,3))sendto(i.fdUDP,"ACK",nread,0,&addr_udp,addrlen_udp);
+				if(strncmp("FND",buffer,3)|| strncmp("RSP",buffer,3))sendto(i.fdUDP,"ACK",4,0,&addr_udp,addrlen_udp);
+				if(strncmp("EFND",buffer,4)){i.addr=addr_udp;i.addrlen=addrlen_udp;}
 				printf("%s",buffer);
 				i=sub_processo(i,buffer);
 				break;

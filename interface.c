@@ -9,11 +9,6 @@ anel interface (anel i, char str[]){
    	 char *opt;
    	 no p;
    	 int fbits,pbits,lbits;
-	//RECEBE OS COMANDO
-/*	INTERFACE:*/
-/*	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");*/
-/*	fflush(stdin);*/
-/*	while(fgets(str, 50, stdin)==NULL);*/
 	
 	c = strtok(str, " ");
 	
@@ -49,11 +44,17 @@ anel interface (anel i, char str[]){
 	if(i.next.ip!=NULL){
 	lbits=(strlen(opt)+strlen(i.prec.ip)+strlen(i.prec.porto)+10);}
 	
-	if(strcmp(opt,"n")==0){i.fdTCP=0; return i;}
+	if(strcmp(opt,"n")==0){
+		if(i.next.ip==NULL)i.fdTCP=0;//FLAG PARA CRIAR NOVO ANEL
+		else printf("ANEL JA EXISTE");
+		return i;
+	}
 	
 	//COMANDO FIND
 	else if(strcmp(opt,"f")==0)
 	{
+		i.k=p.chave;//SALVA A CHAVE DE PROCURA
+		
 		if(j!=2){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
 		if(i.next.ip==NULL)exit(20);//ANEL DE UM SÓ NÓ
 		if(p.chave==i.eu.chave){printf("ES TU");return i;}//ES TU

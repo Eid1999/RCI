@@ -131,20 +131,20 @@ anel sub_processo(anel i, char buffer[])
 	//PROCESSO FND, USADO NO FIND E BENTRY
 	if (strcmp(opt,"FND")==0)
 	{
-		
-		if(k==i.eu.chave)//VERIFICA SE É O NÓ PROCURADO 
+		find:
+		if(k==i.eu.chave|| (d(i.eu.chave,k)<d(i.next.chave,k)&&(i.atalho.ip==NULL||d(i.eu.chave,k)<d(i.atalho.chave,k))))//VERIFICA SE É O NÓ PROCURADO 
 		{
 			opt="RSP";//INICIA PROCESSO DE RESPOSTA DE SUCESSO
 			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,n_find);}//PROCURA O MENOR CAMINHO, ATALHO OU SUCESSOR
 			else {mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,n_find,i.next.fd);}
 			
 		}
-		else if(d(i.eu.chave,k)<d(i.next.chave,k))//VERIFICA SE O NÓ NÃO SE ENCONTRA NO ANEL
-		{
-			opt="RSP";//INICIA PROCESSO DE RESPOSTA COM MENSAGEM DA INEXISTENCIA
-			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,p,fbits2,p.chave,n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {mensagem_tcp(opt,i.next,p,fbits2,p.chave,n_find,i.next.fd);}
-		}
+/*		else if(d(i.eu.chave,k)<d(i.next.chave,k))//VERIFICA SE O NÓ NÃO SE ENCONTRA NO ANEL*/
+/*		{*/
+/*			opt="RSP";//INICIA PROCESSO DE RESPOSTA COM MENSAGEM DA INEXISTENCIA*/
+/*			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,p,fbits2,p.chave,n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR*/
+/*			else {mensagem_tcp(opt,i.next,p,fbits2,p.chave,n_find,i.next.fd);}*/
+/*		}*/
 		else
 		{
 			opt="FND";
@@ -154,14 +154,19 @@ anel sub_processo(anel i, char buffer[])
 		return i;
 	}
 	
+	
+	
+	
+	
+	
+	
 	//PROCESSO RSP, USADO NO FIND E BENTRY
 	if (strcmp(opt,"RSP")==0)
 	{
 		opt="RSP";
 		if(k==i.eu.chave&&n_find==i.n_find)//VERIFICA SE O NÓ É O PROCURADO
 		{
-			if(p.chave==k)printf("Nó não existe no anel");//MENSAGEM DE INEXISTENCIA
-			else printf("Nó %d: (%s : %s) da chamada %d",p.chave, p.ip,p.porto,i.n_find);//MENSAGEM DE SUCESSO
+			printf("Chave %d: Nó %d: (%s : %s) da chamada %d",i.k,p.chave, p.ip,p.porto,i.n_find);//MENSAGEM DE SUCESSO
 			fflush(stdout);
 			i.n_find++;
 			
@@ -175,9 +180,17 @@ anel sub_processo(anel i, char buffer[])
 			
 		}
 	}
+	
+	
+	
+	
 
-	else if(strcmp(opt,"PREB")==0) {
-	printf("new");
+	else if(strcmp(opt,"EFND")==0) {
+		k=p.chave;
+		i.k=k;
+		n_find=i.n_find;
+		p=i.eu;
+		goto find;
 	}
 	return i;
 }
