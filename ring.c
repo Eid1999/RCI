@@ -56,7 +56,8 @@ int main(int argc,char* argv[])
 	i.eu.porto=argv[3];
 
 
-	novo:
+	novo://PARTE DO COMANDO LEAVE
+	
 	//INICIALIÇÃO DE VARIAVEIS PARA CONTROLE(FLAGS)
 	i.n_find=0;
 	i.leave=0;
@@ -75,7 +76,10 @@ int main(int argc,char* argv[])
 		fflush(stdin);
 		fgets(str, 50, stdin);
 		i=interface(i,str);
-	}while((i.prec.ip==NULL && i.fdTCP==-1));
+	}while((i.prec.ip==NULL && i.fdTCP==-1));//SO SAI SE FORMAR UM NO(COMANDO N) OU ENTRAR EM UM ANEL(PENTRY OU BENTRY)
+	
+	
+	
 	/* TCP SOCKET */
 	if((i.fdTCP=socket(AF_INET,SOCK_STREAM,0))==-1)exit(11);//error
 
@@ -115,21 +119,21 @@ int main(int argc,char* argv[])
 
 	
 
-		// PROCURA DE SINAL TCP, UDP E DO USUARIO
+	// PROCURA DE SINAL TCP, UDP E DO USUARIO
 		
 	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
 	for(;;)
 	{
-		if(i.leave==1){i.leave=0;goto novo;}//PARTE DO COMANDO LEAVE
+		if(i.leave==1){i.leave=0;goto novo;}//PARTE DO COMANDO LEAVE COMEÇA PROGRAMA DENOVO
 		
 		
 		FD_ZERO(&rset);// LIMPA
 		FD_SET(i.fdTCP, &rset);
-		if(i.prec.fd!=-1){FD_SET(i.prec.fd, &rset);maxfdp2 = max(i.prec.fd, maxfdp1)+1 ;}
+		if(i.prec.fd!=-1){FD_SET(i.prec.fd, &rset);maxfdp2 = max(i.prec.fd, maxfdp1)+1 ;}//SE TIVER PREDECESSOR PROCURA MENSAGEM DELE
 		FD_SET(i.fdUDP, &rset);
 		FD_SET(STDIN, &rset);
 		
-		nready = select(maxfdp2, &rset, NULL, NULL, NULL);
+		nready = select(maxfdp2, &rset, NULL, NULL, NULL);//INICIA SELECT
 		if(nready<=0)/*error*/exit(19);
 		
 		for (;;) {
@@ -165,7 +169,7 @@ int main(int argc,char* argv[])
 				break;
 				
 			}
-			
+			//SE TIVER MENSAGEMDO PREDECESSOR, ACEITA
 			if (FD_ISSET(i.prec.fd, &rset)) {
 				j=read(i.prec.fd,buffer,128);
 				if(j==-1)/*error*/exit(21);
