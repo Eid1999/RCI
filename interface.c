@@ -151,7 +151,7 @@ anel interface (anel i, char str[]){
 	}
 	
 	
-	else if(strcmp(opt,"-h")==0)printf("\nComandos disponiveis:\n\n n->new \n\n p [CHAVE] [IP] [PORTO]->pentry\n\n b[CHAVE](EM CONSTRUÇAO)->bentry \n\n f [CHAVE]->find\n \n l->leave\n\n e->exit \n\n c->chord\n\n d->delete chord \n\n s->show\n\n");
+	else if(strcmp(opt,"-h")==0)printf("\nComandos disponiveis:\n\n n\t\t\t\t\t new: CRIA ANEL \n\n p [CHAVE] [IP] [PORTO]\t\t\t pentry: ENTRADA NO NÓ SABENDO POSIÇÃO\n\n b [CHAVE][IP] [PORTO] \t\t\t bentry: ENTRADA NO NÓ SEM SABER POSIÇÃO\n\n f [CHAVE]\t\t\t\t find: PROCURA DA CHAVE\n\n l\t\t\t\t\t leave: SAIDA DO ANEL\n\n e\t\t\t\t\t exit: SAIDA DO PROGRAMA\n\n c[CHAVE] [IP] [PORTO]\t\t\t chord: CRIAÇÃO DE CORDAS\n\n d\t\t\t\t\t delete chord: APAGA CORDA\n\n s\t\t\t\t\t show: MOSTRA QUEM TU ES\n\n");
 
 	
 	else{ printf("\nComando invalido\n");}

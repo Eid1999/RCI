@@ -5,10 +5,11 @@ anel sub_processo(anel i, char buffer[])
 	char *c;
 	int j=0,k=0,n_find;
 	char *opt;
+	char ptr[50];
 	no p;
 	p.porto= (char*) malloc(50);
 	p.ip= (char*) malloc(50);
-	int pbits2,pbits,fbits,fbits2;
+	int pbits2,pbits,fbits,fbits2,n;
 
 
 	c = strtok(buffer, " ");
@@ -132,8 +133,10 @@ anel sub_processo(anel i, char buffer[])
 	if (strcmp(opt,"FND")==0)
 	{
 		find:
+		
 		if(k==i.eu.chave|| (d(i.eu.chave,k)<d(i.next.chave,k)&&(i.atalho.ip==NULL||d(i.eu.chave,k)<d(i.atalho.chave,k))))//VERIFICA SE É O NÓ PROCURADO 
 		{
+			if(p.chave==i.eu.chave){goto RSP;}//SE O NO DO PENTRY QUE INICIOU A PESQUISA FOR O MAIS PROXIMO 
 			opt="RSP";//INICIA PROCESSO DE RESPOSTA DE SUCESSO
 			if(i.atalho.ip!=NULL && d(p.chave,i.atalho.chave)<d(p.chave,i.next.chave)){mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,n_find);}//PROCURA O MENOR CAMINHO, ATALHO OU SUCESSOR
 			else {mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,n_find,i.next.fd);}
@@ -166,15 +169,24 @@ anel sub_processo(anel i, char buffer[])
 		opt="RSP";
 		if(k==i.eu.chave&&n_find==i.n_find)//VERIFICA SE O NÓ É O PROCURADO
 		{
-			printf("Chave %d: Nó %d: (%s : %s) da chamada %d",i.k,p.chave, p.ip,p.porto,i.n_find);//MENSAGEM DE SUCESSO
+			RSP:
+			if(i.k==-1){
+				do{
+					snprintf(ptr,30,"EPRED %d %s %s\n",p.chave,p.ip,p.porto);
+					n=sendto(i.fdUDP,ptr,32,0,&i.addr,i.addrlen);
+					if(n==-1)/*error*/exit(32);
+					 buffer=ACK(0,i.fdUDP);
+				}while(strncmp("ACK",buffer,3)==0);
+			}
+			else printf("Chave %d: Nó %d: (%s : %s) da chamada %d\n",i.k,p.chave, p.ip,p.porto,i.n_find);//MENSAGEM DE SUCESSO
 			fflush(stdout);
 			i.n_find++;
-			
+			i.k=-1;
 		}
 		
 		else//PROCURA O NO QUE INICIALIZOU O FIND
 		{
-
+			
 			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){mensagem_udp(opt,i.atalho,p,fbits2,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
 			else {mensagem_tcp(opt,i.next,p,fbits2,k,n_find,i.next.fd);}
 			
@@ -187,7 +199,6 @@ anel sub_processo(anel i, char buffer[])
 
 	else if(strcmp(opt,"EFND")==0) {
 		k=p.chave;
-		i.k=k;
 		n_find=i.n_find;
 		p=i.eu;
 		goto find;

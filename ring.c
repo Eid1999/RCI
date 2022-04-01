@@ -57,7 +57,7 @@ int main(int argc,char* argv[])
 
 
 	novo:
-	//INICIALIÇÃO DE VARIAVEIS PARA CONTROLE
+	//INICIALIÇÃO DE VARIAVEIS PARA CONTROLE(FLAGS)
 	i.n_find=0;
 	i.leave=0;
 	i.next.ip=NULL; 
@@ -67,7 +67,7 @@ int main(int argc,char* argv[])
 	i.prec.fd=-1;
 	i.fdTCP=-1;
 	i.fdUDP=-1;
-/*	i.k=-1;*/
+	i.k=-1;
 
 	//INTERFACE
 	do{
@@ -158,8 +158,8 @@ int main(int argc,char* argv[])
 				addrlen_udp=sizeof(addr_udp);
 				nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);
 				if(nread==-1)/*error*/exit(30);
-				if(strncmp("FND",buffer,3)|| strncmp("RSP",buffer,3))sendto(i.fdUDP,"ACK",4,0,&addr_udp,addrlen_udp);
-				if(strncmp("EFND",buffer,4)){i.addr=addr_udp;i.addrlen=addrlen_udp;}
+				sendto(i.fdUDP,"ACK",4,0,&addr_udp,addrlen_udp);
+				if(strncmp("EFND",buffer,4)==0){i.addr=addr_udp;i.addrlen=addrlen_udp;}
 				printf("%s",buffer);
 				i=sub_processo(i,buffer);
 				break;

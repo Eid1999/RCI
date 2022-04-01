@@ -27,13 +27,15 @@ void mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 	if(n==-1)/*error*/exit(32);
 
        buffer=ACK(0,fd);
-       if(strncmp(buffer,"ACK",3)!=0){free(buffer);goto NOACK;}
+       if(strncmp(buffer,"ACK",4)!=0){free(buffer);goto NOACK;}
 	printf("%s\n",buffer);
 	//PROCESSO DE RECEBIMENTO DO PENTRY
-	if(strncmp(opt,"EPRED",4)!=0){
+	if(strncmp(opt,"EFND",4)==0){
 		addrlen=sizeof(addr);
-		n=recvfrom(fd,buffer,128,0,&addr,&addrlen);
+		n=recvfrom(fd,buffer,30,0,&addr,&addrlen);
 		if(n==-1)/*error*/exit(1);
+		printf("%s\n",buffer);
+		sendto(fd,"ACK",4,0,&addr,addrlen);
 	}
 	freeaddrinfo(res);
 	close(fd);
