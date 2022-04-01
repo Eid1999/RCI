@@ -90,7 +90,7 @@ anel interface (anel i, char str[]){
 		
 		
 	//COMANDO PENTRY
-	else if(strcmp(opt,"p")==0) {
+	else if(strcmp(opt,"p")==0||strcmp("EPRED",opt)) {
 		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
 		
 		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("ES TU");return i;}//ES TU

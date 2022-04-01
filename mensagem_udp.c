@@ -2,12 +2,13 @@
 #include "Anel.h"
 
 
-void mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
+char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 {
 	struct addrinfo hints,*res;
 	int fd,errcode;
 	ssize_t n;
-	char ptr[nbits],*buffer;
+	char ptr[nbits];
+	static char buffer [50];
 	struct sockaddr addr;
 	socklen_t addrlen;
 	
@@ -32,21 +33,22 @@ void mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 	if(nbits!=0)n=sendto(fd,ptr,nbits,0,res->ai_addr,res->ai_addrlen);
 	if(n==-1)/*error*/exit(32);
 	
-       buffer=ACK(0,fd);//ESPERA ACK
+       strcpy(buffer,ACK(0,fd));//ESPERA ACK
        
-       if(strncmp(buffer,"ACK",4)!=0){free(buffer);goto NOACK;}//SE RECEBER ACK CONTINUA, SE NÃO ENVIA A MENSAGEM DENOVO
+       if(strncmp(buffer,"ACK",3)!=0){goto NOACK;}//SE RECEBER ACK CONTINUA, SE NÃO ENVIA A MENSAGEM DENOVO
 	printf("%s\n",buffer);//APAGAR DPS
 	
-	//PROCESSO DE RECEBIMENTO DO BENTRY
+	//PROCESSO DE RECEBIMENTO DO ENTRY
 	if(strncmp(opt,"EFND",4)==0){
 		addrlen=sizeof(addr);
 		n=recvfrom(fd,buffer,30,0,&addr,&addrlen);
 		if(n==-1)/*error*/exit(1);
 		printf("%s\n",buffer);
-		sendto(fd,"ACK",4,0,&addr,addrlen);
+		sendto(fd,"ACK",3,0,&addr,addrlen);
+		
 	}
 	freeaddrinfo(res);
 	close(fd);
-	return;
+	return buffer;
 	
 }

@@ -202,7 +202,7 @@ anel sub_processo(anel i, char buffer[])
 					
 					//ESPERA O ACK
 					 buffer=ACK(0,i.fdUDP);
-				}while(strncmp("ACK",buffer,3)==0);
+				}while(strncmp("ACK",buffer,3)!=0);
 			}
 			else printf("Chave %d: Nó %d: (%s : %s) da chamada %d\n",i.k,p.chave, p.ip,p.porto,i.n_find);//PRINTF DO FIND
 			fflush(stdout);

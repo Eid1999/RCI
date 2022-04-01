@@ -72,7 +72,7 @@ int main(int argc,char* argv[])
 
 	//INTERFACE
 	do{
-		printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
+		printf("\nBem vindo ao programa,\nCrie ou conecte-se a um anel(-h para ajuda):\n");
 		fflush(stdin);
 		fgets(str, 50, stdin);
 		i=interface(i,str);
@@ -121,7 +121,7 @@ int main(int argc,char* argv[])
 
 	// PROCURA DE SINAL TCP, UDP E DO USUARIO
 		
-	printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
+	printf("\nInterface do usuario, escreva um comando:(-h para ajuda):\n");
 	for(;;)
 	{
 		if(i.leave==1){i.leave=0;goto novo;}//PARTE DO COMANDO LEAVE COMEÇA PROGRAMA DENOVO
@@ -143,7 +143,7 @@ int main(int argc,char* argv[])
 			if (FD_ISSET(STDIN, &rset)){
 				fgets(str, 50, stdin);
 				i=interface(i,str);
-				if(i.leave!=1) printf("\nInterface do usuario, escreva um comando:(-h para ajuda)\n");
+				if(i.leave!=1) printf("\nInterface do usuario, escreva um comando:(-h para ajuda):\n");
 				break;
 			}
 			 //SE TIVER SINAL TCP, ACEITA

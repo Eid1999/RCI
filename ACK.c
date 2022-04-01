@@ -5,28 +5,32 @@ char *ACK(int fdTCP, int fdUDP)//TROCAR PARA MENSAGENS
 {
 	socklen_t addrlen_udp;
 	ssize_t nread;
-	char *buffer;   
+	static char buffer[50];   
 	ssize_t j;
 	int maxfdp1;
 	fd_set rset;
 	int nready;
 	struct timeval timer;
 	struct sockaddr addr_udp;
-	buffer= (char*) malloc(4);
 	maxfdp1 = max(fdUDP, fdTCP)+1 ;
 	
 	
-	FD_ZERO(&rset);// LIMPA
-		// PROCURA DE SINAL TCP, UDP E DO USUARIO
-		if(fdTCP!=0)FD_SET(fdTCP, &rset);
-		if(fdUDP!=0)FD_SET(fdUDP, &rset);
-		 timer.tv_sec = 60;
-    		timer.tv_usec = 0;
+	
+		
+		
+		
+		
     		
 	for (;;)
 	 {
+	 	FD_ZERO(&rset);// LIMPA
+		// PROCURA DE SINAL TCP, UDP E DO USUARIO
+		if(fdTCP!=0)FD_SET(fdTCP, &rset);
+		if(fdUDP!=0)FD_SET(fdUDP, &rset);
+	 	 timer.tv_sec = 10;
+    		timer.tv_usec = 0;
 	 	nready = select(maxfdp1, &rset, NULL, NULL,&timer);
-		if(nready<=0){buffer="ERRO";return buffer;};
+		if(nready<=0){strcpy(buffer,"ERRO");return buffer;};
 
 		 //SE TIVER SINAL TCP, ACEITA
 		if (fdTCP!=0 && FD_ISSET(fdTCP, &rset)) 
