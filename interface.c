@@ -9,6 +9,8 @@ anel interface (anel i, char str[]){
    	 char *opt;
    	 no p;
    	 int fbits,pbits,lbits;
+   	 int quit=0;
+   	 static char buffer [50];
 	
 	c = strtok(str, " ");
 	
@@ -53,6 +55,7 @@ anel interface (anel i, char str[]){
 		if(i.next.ip==NULL)i.fdTCP=0;//FLAG PARA CRIAR SAIR DA INTERFACE
 		else printf("ANEL JA EXISTE");//ANEL JA EXISTE
 		return i;
+		
 	}
 	
 	
@@ -84,13 +87,14 @@ anel interface (anel i, char str[]){
 	else if(strcmp(opt,"b")==0) {
 			//ENVIA MENSAGEM
 			opt="EFND";
-			mensagem_udp(opt,p,i.eu,8,p.chave,-1);
+			strcpy(buffer,mensagem_udp(opt,p,i.eu,8,p.chave,-1));
+			i=interface(i,buffer);
 		}
 		
 		
 		
 	//COMANDO PENTRY
-	else if(strcmp(opt,"p")==0||strcmp("EPRED",opt)) {
+	else if(strcmp(opt,"p")==0||strncmp("EPRED",opt,4)==0) {
 		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
 		
 		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("ES TU");return i;}//ES TU
@@ -144,22 +148,13 @@ anel interface (anel i, char str[]){
 	
 	//COMANDO EXIT	
 	else if(strcmp(opt,"e")==0){
-		//LIMPA INFORMAÇOES
-		if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);}
-		if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);}
-		if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);}
-		//FECHA SOCKET
-		if(i.next.fd!=-1)//FECHA LIGAÇAO CLIENTE-SOCKETS
-		{
-			close(i.next.fd);
-			close(i.prec.fd);
-		}
-		close(i.fdTCP);
-		close(i.fdUDP);
-		exit(10);
+		quit=1;
+		goto leave;//LEAVE PRIMEIRO
+		
 	}
 	//COMANDO LEAVE
 	else if(strcmp(opt,"l")==0){
+		leave://PARTE DO EXIT
 		opt="PRED";
 		if(i.next.ip!=NULL)mensagem_tcp(opt,i.next,i.prec,lbits,-1,0,i.next.fd);//AVISA O SUCESSOR DAS INFORMAÇOES DO PRECESSOR
 		
@@ -194,7 +189,8 @@ anel interface (anel i, char str[]){
 
 	
 	else{ printf("\nComando invalido\n");}
-/*	if(i.next.ip==NULL&&i.fdTCP==-1) goto INTERFACE;*/
+
+	if(quit==1)exit(1);//EXIT COMANDO
 
 	return i;
 }

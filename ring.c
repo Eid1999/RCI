@@ -152,7 +152,7 @@ int main(int argc,char* argv[])
 				if((newfd=accept(i.fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(20);
 				j=read(newfd,buffer,128);
 				if(j==-1)/*error*/exit(21);
-				printf("%s",buffer);
+				printf("%s\n",buffer);
 				if(strncmp("SELF",buffer,4)==0){i.AUX=newfd;}
 				i=sub_processo(i,buffer);
 				break;
@@ -164,7 +164,7 @@ int main(int argc,char* argv[])
 				if(nread==-1)/*error*/exit(30);
 				sendto(i.fdUDP,"ACK",4,0,&addr_udp,addrlen_udp);
 				if(strncmp("EFND",buffer,4)==0){i.addr=addr_udp;i.addrlen=addrlen_udp;}
-				printf("%s",buffer);
+				printf("%s\n",buffer);
 				i=sub_processo(i,buffer);
 				break;
 				
@@ -173,7 +173,7 @@ int main(int argc,char* argv[])
 			if (FD_ISSET(i.prec.fd, &rset)) {
 				j=read(i.prec.fd,buffer,128);
 				if(j==-1)/*error*/exit(21);
-				printf("%s",buffer);
+				printf("%s\n",buffer);
 				i=sub_processo(i,buffer);
 				break;
 			}
