@@ -85,11 +85,13 @@ anel interface (anel i, char str[]){
 	
 	//COMANDO BENTRY
 	else if(strcmp(opt,"b")==0) {
-			//ENVIA MENSAGEM
-			opt="EFND";
-			strcpy(buffer,mensagem_udp(opt,p,i.eu,8,p.chave,-1));
-			i=interface(i,buffer);//INICIA O PROCESSO PENTRY
-		}
+		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
+		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("ES TU");return i;}//ES TU
+		//ENVIA MENSAGEM
+		opt="EFND";
+		strcpy(buffer,mensagem_udp(opt,p,i.eu,8,p.chave,-1));
+		i=interface(i,buffer);//INICIA O PROCESSO PENTRY
+	}
 		
 		
 		

@@ -154,7 +154,7 @@ anel sub_processo(anel i, char buffer[])
 	{
 		find://PARTE DO COMANDO BENTRY
 		
-		if(k==i.eu.chave|| (d(i.eu.chave,k)<d(i.next.chave,k)&&(i.atalho.ip==NULL||d(i.eu.chave,k)<d(i.atalho.chave,k))))//VERIFICA SE É O NÓ PROCURADO OU PERTENCE
+		if(k==i.eu.chave|| (i.next.ip==NULL||(d(i.eu.chave,k)<d(i.next.chave,k)&&(i.atalho.ip==NULL||d(i.eu.chave,k)<d(i.atalho.chave,k)))))//VERIFICA SE É O NÓ PROCURADO OU PERTENCE
 		{
 			opt="RSP";//INICIA PROCESSO DE RESPOSTA
 			if(p.chave==i.eu.chave){goto RSP;}//BENTRY, SE O NO QUE FOI CHAMADO FOR O MAIS PROXIMO
