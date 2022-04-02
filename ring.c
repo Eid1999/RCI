@@ -55,6 +55,7 @@ int main(int argc,char* argv[])
 	i.eu.ip=argv[2];
 	i.eu.porto=argv[3];
 
+	printf("\nBem vindo ao ring\n");
 
 	novo://PARTE DO COMANDO LEAVE
 	
@@ -72,15 +73,16 @@ int main(int argc,char* argv[])
 
 	//INTERFACE
 	do{
-		printf("\nBem vindo ao programa,\nCrie ou conecte-se a um anel(-h para ajuda):\n");
+		printf("\nCrie ou conecte-se a um anel(-h para ajuda):\n");
 		fflush(stdin);
 		fgets(str, 50, stdin);
 		i=interface(i,str);
-	}while((i.prec.ip==NULL && i.fdTCP==-1));//SO SAI SE FORMAR UM NO(COMANDO N) OU ENTRAR EM UM ANEL(PENTRY OU BENTRY)
+	}while((i.prec.ip==NULL && i.fdTCP==-1));//SAI SE FORMAR UM NO(COMANDO N) OU ENTRAR EM UM ANEL(NEW, PENTRY OU BENTRY)
 	
 	
 	
-	/* TCP SOCKET */
+	//CRIA OS SOCKETS DEPOIS DE FAZER PARTE DE UM ANEL
+	//TCP SOCKET
 	if((i.fdTCP=socket(AF_INET,SOCK_STREAM,0))==-1)exit(11);//error
 
 	memset(&hints,0,sizeof hints);
@@ -98,7 +100,7 @@ int main(int argc,char* argv[])
 	freeaddrinfo(res);
 
 
-	/* UDP SOCKET */
+	//UDP SOCKETS
 	if((i.fdUDP=socket(AF_INET,SOCK_DGRAM,0))==-1)exit(16);//error
 	memset(&hints_udp,0,sizeof hints_udp);
 	hints_udp.ai_family=AF_INET;//IPv4z
@@ -107,9 +109,8 @@ int main(int argc,char* argv[])
 	if((errcode=getaddrinfo(NULL,i.eu.porto,&hints_udp,&res_udp))!=0)/*error*/exit(17);
 	if(bind(i.fdUDP,res_udp->ai_addr,res_udp->ai_addrlen)==-1)/*error*/exit(18);//BUG NESSA LINHA PENTRY APOS LEAVE
 
-
+	//CALCULA O MAIOR SOCKER
 	freeaddrinfo(res_udp);
-	
 	maxfdp1 = max(i.fdUDP, i.fdTCP) ;
 	maxfdp1 = max(i.prec.fd, maxfdp1) ;
 	maxfdp1=max(STDIN,maxfdp1)+1;
@@ -127,7 +128,9 @@ int main(int argc,char* argv[])
 		if(i.leave==1){i.leave=0;goto novo;}//PARTE DO COMANDO LEAVE COMEÇA PROGRAMA DENOVO
 		
 		
-		FD_ZERO(&rset);// LIMPA
+		FD_ZERO(&rset);// LIMPA SELECT
+		//INILICILIZA SELECT 
+		
 		FD_SET(i.fdTCP, &rset);
 		if(i.prec.fd!=-1){FD_SET(i.prec.fd, &rset);maxfdp2 = max(i.prec.fd, maxfdp1)+1 ;}//SE TIVER PREDECESSOR PROCURA MENSAGEM DELE
 		FD_SET(i.fdUDP, &rset);
@@ -139,42 +142,42 @@ int main(int argc,char* argv[])
 		for (;;) {
 			
 
-			// SE TIVER SINAL INPUT DO USUARIO ENTRA NO INTERFACE
+			//INPUT DO USUARIO, ENTRA NO INTERFACE
 			if (FD_ISSET(STDIN, &rset)){
 				fgets(str, 50, stdin);
 				i=interface(i,str);
 				if(i.leave!=1) printf("\nInterface do usuario, escreva um comando:(-h para ajuda):\n");
 				break;
 			}
-			 //SE TIVER SINAL TCP, ACEITA
+			 //SERVIDOR TCP
 			if (FD_ISSET(i.fdTCP, &rset)) {
 				addrlen_tcp=sizeof(addr_tcp);
-				if((newfd=accept(i.fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(20);
-				j=read(newfd,buffer,128);
+				if((newfd=accept(i.fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(20);//ACEITA E CRIA SOCKET(PENTRY/BENTRY)
+				j=read(newfd,buffer,128);//LE MENSAGEM
 				if(j==-1)/*error*/exit(21);
 				printf("%s\n",buffer);
-				if(strncmp("SELF",buffer,4)==0){i.AUX=newfd;}
-				i=sub_processo(i,buffer);
+				if(strncmp("SELF",buffer,4)==0){i.AUX=newfd;}//GRAVA FD DO CLIENTE
+				i=sub_processo(i,buffer);//PROCESSOS INTERNOS DO ANEL(SELF, PRED..)
 				break;
 			}
-			//  SE TIVER SINAL UDP, ACEITA
+			//SERVIDOR  UDP
 			if (FD_ISSET(i.fdUDP, &rset)) {
 				addrlen_udp=sizeof(addr_udp);
-				nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);
+				nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);//RECEBE MENSAGEM
 				if(nread==-1)/*error*/exit(30);
-				sendto(i.fdUDP,"ACK",4,0,&addr_udp,addrlen_udp);
-				if(strncmp("EFND",buffer,4)==0){i.addr=addr_udp;i.addrlen=addrlen_udp;}
+				sendto(i.fdUDP,"ACK",4,0,&addr_udp,addrlen_udp);//ENVIA ACK
+				if(strncmp("EFND",buffer,4)==0){i.addr=addr_udp;i.addrlen=addrlen_udp;}//SALVA INFORMACAO DO CLIENTE(BENTRY)
 				printf("%s\n",buffer);
-				i=sub_processo(i,buffer);
+				i=sub_processo(i,buffer);//PROCESSOS INTERNOS DO ANEL(FND,RSP...)
 				break;
 				
 			}
-			//SE TIVER MENSAGEMDO PREDECESSOR, ACEITA
+			//SERVIDOR TCP DO PREDECESSOR
 			if (FD_ISSET(i.prec.fd, &rset)) {
-				j=read(i.prec.fd,buffer,128);
+				j=read(i.prec.fd,buffer,128);//LE MENSAGEM
 				if(j==-1)/*error*/exit(21);
 				printf("%s\n",buffer);
-				i=sub_processo(i,buffer);
+				i=sub_processo(i,buffer);//PROCESSOS INTERNOS DO ANEL(RSP,FND...)
 				break;
 			}
 			

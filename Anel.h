@@ -21,12 +21,12 @@ typedef struct _no {
     int fd;
 }no;
 
-//ESTRUTURA DO ANEL VISTA DO NO
+//ESTRUTURA DO ANEL VISTA PELO NO
 typedef struct _anel {
-    no eu;
-    no next;
-    no prec;
-    no atalho;
+    no eu;//EU
+    no next;//SUCESSOR
+    no prec;//PREDECESSOR
+    no atalho;//CORDA
     
      int fdTCP;//FD TCP DO SERVIDOR
     int fdUDP;//FD UDP DO SERVIDOR
@@ -47,11 +47,20 @@ typedef struct _anel {
     
 }anel;
 
-char *ACK(int fdTCP, int fdUDP);//PROGRAMA PARA VALIDAÇÃO DE RECEBIMENTO
-anel sub_processo(anel i, char buffer[]);//SUB PROCESSOS(FORA DO CONTROLE DO USUARIO)
-anel interface(anel i,char str[]);//INTEFACE DO USUARIO
-int mensagem_tcp(char *opt, no dest, no envio,int nbits,int k, int n_find,int fd);//MESSAGEM TCP
-char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find);//MENSAGEM UDP
-int d(int d1,int d2);//CALCULAR A DISTANCIA
-int max(int x, int y);
+char *ACK(int fdTCP, int fdUDP);//PROGRAMA DO ACK
+
+
+anel sub_processo(anel i, char buffer[]);//PROCESSO INTERNOS(buffer-mensagem recebida)
+
+anel interface(anel i,char str[]);//INTEFACE DO USUARIO(comando recebido)
+
+int mensagem_tcp(char *opt, no dest, no envio,int nbits,int k, int n_find,int fd);//MESSAGEM TCP(opt-opçao (SELF,PRED),dest-destino da mensagem,envio-de onde vem o envio,nbits-tamanho da mensagem,k-chave procurada,n_find-numero da pesquiça )
+
+char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find);//MENSAGEM UDP(opt-opçao (SELF,PRED),dest-destino da mensagem,envio-de onde vem o envio,nbits-tamanho da mensagem,k-chave procurada,n_find-numero da pesquiça )
+
+int d(int d1,int d2);//CALCULAR A DISTANCIA(d2-d1)mod
+
+int max(int x, int y);//CALCULA O MAIOR SOCKET PARA SELECT
+
+
 #endif /* ANEL_DOT_H */

@@ -95,11 +95,11 @@ anel sub_processo(anel i, char buffer[])
 
 		}
 		
-		else//PRIMEIRA ETAPA DO PENTRY E ULTIMA DO LEAVE 
+		else//SEGUNDA ETAPA DO PENTRY E ULTIMA DO LEAVE 
 		{	
 			//ENVIA MENSAGEM
 			opt="PRED";
-			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))mensagem_tcp(opt,i.next,p,pbits2,-1,0,i.next.fd);/*DIFERENCIA O PROCESSO DO PENTRY OU LEAVE*/
+			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))mensagem_tcp(opt,i.next,p,pbits2,-1,0,i.next.fd);//DIFERENCIA O PROCESSO DO PENTRY OU LEAVE
 			//SALVA INFORMAÇÃO RECEBIDA
 			memcpy(i.next.ip,p.ip,50);
 			memcpy(i.next.porto,p.porto,50);
@@ -120,7 +120,7 @@ anel sub_processo(anel i, char buffer[])
 	if (strcmp(opt,"PRED")==0){
 	
 		opt="SELF";		
-		if( p.chave!=i.eu.chave)//PRIMEIRA ETAPA DO LEAVE, E SEGUNDA ETAPA DO PENTRY
+		if( p.chave!=i.eu.chave)//SEGUNDA ETAPA DO LEAVE E PENULTIMA ETAPA DO PENTRY
 		{
 			//SALVA INFORMAÇAO RECEBIDA
 			memcpy(i.prec.porto,p.porto,50);
@@ -194,7 +194,9 @@ anel sub_processo(anel i, char buffer[])
 			RSP://PARTE DO COMANDO FND(INICIALIZADO PELO BENTRY)
 			
 			if(i.k==-1){//VERIFICA SE ESTA NO COMANDO FIND OU BENTRY
-				do{//ACK
+			
+				do{//PROCESSO DO ACK
+				
 					//MENSAGEM DE RESPOSTA 
 					snprintf(ptr,30,"EPRED %d %s %s\n",p.chave,p.ip,p.porto);
 					n=sendto(i.fdUDP,ptr,32,0,&i.addr,i.addrlen);
@@ -202,6 +204,7 @@ anel sub_processo(anel i, char buffer[])
 					
 					//ESPERA O ACK
 					 buffer=ACK(0,i.fdUDP);
+					 
 				}while(strncmp("ACK",buffer,3)!=0);
 			}
 			else printf("Chave %d: Nó %d: (%s : %s) da chamada %d\n",i.k,p.chave, p.ip,p.porto,i.n_find);//PRINTF DO FIND

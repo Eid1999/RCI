@@ -88,7 +88,7 @@ anel interface (anel i, char str[]){
 			//ENVIA MENSAGEM
 			opt="EFND";
 			strcpy(buffer,mensagem_udp(opt,p,i.eu,8,p.chave,-1));
-			i=interface(i,buffer);
+			i=interface(i,buffer);//INICIA O PROCESSO PENTRY
 		}
 		
 		
@@ -149,7 +149,7 @@ anel interface (anel i, char str[]){
 	
 	//COMANDO EXIT	
 	else if(strcmp(opt,"e")==0){
-		quit=1;
+		quit=1;//FLAG
 		goto leave;//LEAVE PRIMEIRO
 		
 	}
@@ -180,18 +180,16 @@ anel interface (anel i, char str[]){
 		if(i.fdTCP!=-1){
 			close(i.fdTCP);
 			close(i.fdUDP);
-		}
-		return i;
-		      
+		}		      
 	}
 	
-	//FUTILIDADE
+	//FUTILIDADES
 	else if(strcmp(opt,"-h")==0)printf("\nComandos disponiveis:\n\n n\t\t\t\t\t new: CRIA ANEL \n\n p [CHAVE] [IP] [PORTO]\t\t\t pentry: ENTRADA NO NÓ SABENDO POSIÇÃO\n\n b [CHAVE][IP] [PORTO] \t\t\t bentry: ENTRADA NO NÓ SEM SABER POSIÇÃO\n\n f [CHAVE]\t\t\t\t find: PROCURA DA CHAVE\n\n l\t\t\t\t\t leave: SAIDA DO ANEL\n\n e\t\t\t\t\t exit: SAIDA DO PROGRAMA\n\n c[CHAVE] [IP] [PORTO]\t\t\t chord: CRIAÇÃO DE CORDAS\n\n d\t\t\t\t\t delete chord: APAGA CORDA\n\n s\t\t\t\t\t show: MOSTRA QUEM TU ES\n\n");
 
 	
 	else{ printf("\nComando invalido\n");}
 
-	if(quit==1)exit(1);//EXIT COMANDO
+	if(quit==1)exit(1);//PARTE DO EXIT
 
 	return i;
 }
