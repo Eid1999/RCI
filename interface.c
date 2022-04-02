@@ -98,6 +98,7 @@ anel interface (anel i, char str[]){
 		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
 		
 		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("ES TU");return i;}//ES TU
+		if(p.chave==i.eu.chave){printf("CHAVE INVALIDA");return i;}//TENTATIVA DE ENTRAR COM CHAVE INVALIDA
 		
 		//ALOCA MEMORIA
 		i.prec.porto= (char*) malloc(50);
