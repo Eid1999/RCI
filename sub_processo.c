@@ -207,7 +207,7 @@ anel sub_processo(anel i, char buffer[])
 					 
 				}while(strncmp("ACK",buffer,3)!=0);
 			}
-			else printf("Chave %d: Nó %d: (%s : %s) da chamada %d\n",i.k,p.chave, p.ip,p.porto,i.n_find);//PRINTF DO FIND
+			else printf("Chave %d: Nó %d(%s : %s) da chamada %d\n",i.k,p.chave, p.ip,p.porto,i.n_find);//PRINTF DO FIND
 			fflush(stdout);
 			i.n_find++;//MUDA O NUMERO DE CHAMADA
 			i.k=-1;//REINICIALIZA FLAG

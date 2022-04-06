@@ -121,7 +121,7 @@ anel interface (anel i, char str[]){
 	else if(strcmp(opt,"c")==0) {
 		
 		if(j<4){printf("\nComando invalido\n");return i;}//ERRO NO COMANDO
-		
+		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("ES TU");return i;}//ES TU
 		//ALOCA MEMORIA
 		i.atalho.porto= (char*) malloc(50);
 		i.atalho.ip= (char*) malloc(50);
