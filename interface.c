@@ -52,8 +52,8 @@ anel interface (anel i, char str[]){
 	
 	//COMANDO NEW
 	if(strcmp(opt,"n")==0){
-		if(i.next.ip==NULL)i.fdTCP=0;//FLAG PARA CRIAR SAIR DA INTERFACE
-		else printf("ANEL JA EXISTE");//ANEL JA EXISTE
+		if(i.next.ip==NULL&&i.fdTCP==-1)i.fdTCP=0;//FLAG PARA CRIAR SAIR DA INTERFACE
+		else printf("ANEL JA EXISTE\n");//ANEL JA EXISTE
 		return i;
 		
 	}
@@ -70,7 +70,7 @@ anel interface (anel i, char str[]){
 		
 		if(i.next.ip==NULL)exit(20);//ANEL DE UM SÓ NÓ
 		
-		if(p.chave==i.eu.chave){printf("ES TU");return i;}//ES TU
+		if(p.chave==i.eu.chave){printf("\nES TU\n");return i;}//ES TU
 		
 		//ENVIA MENSAGEM
 		opt="FND";
@@ -86,7 +86,7 @@ anel interface (anel i, char str[]){
 	//COMANDO BENTRY
 	else if(strcmp(opt,"b")==0) {
 		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
-		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("ES TU");return i;}//ES TU
+		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("\nES TU\n");return i;}//ES TU
 		//ENVIA MENSAGEM
 		opt="EFND";
 		strcpy(buffer,mensagem_udp(opt,p,i.eu,8,p.chave,-1));
@@ -99,8 +99,8 @@ anel interface (anel i, char str[]){
 	else if(strcmp(opt,"p")==0||strncmp("EPRED",opt,4)==0) {
 		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
 		
-		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("ES TU");return i;}//ES TU
-		if(p.chave==i.eu.chave){printf("CHAVE INVALIDA");return i;}//TENTATIVA DE ENTRAR COM CHAVE INVALIDA
+		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("\nES TU\n");return i;}//ES TU
+		if(p.chave==i.eu.chave){printf("\nCHAVE INVALIDA\n");return i;}//TENTATIVA DE ENTRAR COM CHAVE INVALIDA
 		
 		//ALOCA MEMORIA
 		i.prec.porto= (char*) malloc(50);
@@ -121,7 +121,7 @@ anel interface (anel i, char str[]){
 	else if(strcmp(opt,"c")==0) {
 		
 		if(j<4){printf("\nComando invalido\n");return i;}//ERRO NO COMANDO
-		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("ES TU");return i;}//ES TU
+		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("\nES TU\n");return i;}//ES TU
 		//ALOCA MEMORIA
 		i.atalho.porto= (char*) malloc(50);
 		i.atalho.ip= (char*) malloc(50);

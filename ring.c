@@ -42,13 +42,20 @@ int main(int argc,char* argv[])
 	fd_set rset;
 	struct sockaddr addr_udp, addr_tcp;
 	socklen_t addrlen_udp,addrlen_tcp;
+	
 	ssize_t nread;
 	char buffer[128];
 	char  str[50];
 	int newfd;       
 	ssize_t j;
-	int maxfdp1,maxfdp2;
-	anel i;
+	int maxfdp1,maxfdp2;//
+	char UDPaux[50];//AUXILIAR DE MENSAGEM UDP
+	anel i;//ESTRUTUTA DO ANEL
+	//AUXILIAR DE MENSAGEM TCP
+	char *aux;
+	
+	
+	aux=NULL;
 
 
 	sscanf(argv[1], "%d", &i.eu.chave);
@@ -155,17 +162,39 @@ int main(int argc,char* argv[])
 				if((newfd=accept(i.fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(20);//ACEITA E CRIA SOCKET(PENTRY/BENTRY)
 				j=read(newfd,buffer,128);//LE MENSAGEM
 				if(j==-1)/*error*/exit(21);
+						
+				if(strrchr(buffer,'\n')==NULL){//VE SE CHEGOU A MENSAGEM INTEIRA
+					if(aux==NULL){
+						aux= (char*) malloc(50);
+						strncpy(aux,buffer,j);//COPIA A PRIMEIRA PARTE DA MENSAGEM
+					}
+					else strncat(aux,buffer,j);//COPIA AS OUTRA PARTE DA MENSAGEM
+					break;
+				}
+				else if(aux!=NULL)
+				{
+					strncat(aux,buffer,j+1);
+					strcpy(buffer,aux);//COPIA SEGUNDA PARTE DA MENSAGEM 				
+					//LIBERTA OS AUXILIAR
+					free(aux);
+					aux=NULL;
+				}
+				//
+				
 				printf("%s\n",buffer);
 				if(strncmp("SELF",buffer,4)==0){i.AUX=newfd;}//GRAVA FD DO CLIENTE
 				i=sub_processo(i,buffer);//PROCESSOS INTERNOS DO ANEL(SELF, PRED..)
 				break;
 			}
+			
 			//SERVIDOR  UDP
 			if (FD_ISSET(i.fdUDP, &rset)) {
 				addrlen_udp=sizeof(addr_udp);
 				nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);//RECEBE MENSAGEM
 				if(nread==-1)/*error*/exit(30);
 				sendto(i.fdUDP,"ACK",4,0,&addr_udp,addrlen_udp);//ENVIA ACK
+				if(strncmp(UDPaux,buffer,nread)==0)break;//VE SE RECEBEU MENSAGEM REPETIDA(ACK NÃO CHEGOU)
+				strncpy(UDPaux,buffer,nread+1);//SALVA MESAGEM PARA COMPARA PROXIMA VEZ
 				if(strncmp("EFND",buffer,4)==0){i.addr=addr_udp;i.addrlen=addrlen_udp;}//SALVA INFORMACAO DO CLIENTE(BENTRY)
 				printf("%s\n",buffer);
 				i=sub_processo(i,buffer);//PROCESSOS INTERNOS DO ANEL(FND,RSP...)
