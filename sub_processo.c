@@ -92,6 +92,8 @@ anel sub_processo(anel i, char buffer[])
 			memcpy(i.next.ip,p.ip,50);
 			memcpy(i.next.porto,p.porto,50);
 			i.next.chave=p.chave;
+			//SALVA SOCKET DO NOVO SUCESSOR
+			i.next.fd=i.AUX;
 
 		}
 		
@@ -99,7 +101,7 @@ anel sub_processo(anel i, char buffer[])
 		{	
 			//ENVIA MENSAGEM
 			opt="PRED";
-			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))mensagem_tcp(opt,i.next,p,pbits2,-1,0,i.next.fd);//DIFERENCIA O PROCESSO DO PENTRY OU LEAVE
+			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))mensagem_tcp(opt,i.next,p,pbits2,-1,0,i.next.fd);//DIFERENCIA ENTRE O PROCESSO DO PENTRY E LEAVE
 			//SALVA INFORMAÇÃO RECEBIDA
 			memcpy(i.next.ip,p.ip,50);
 			memcpy(i.next.porto,p.porto,50);
@@ -203,11 +205,11 @@ anel sub_processo(anel i, char buffer[])
 					if(n==-1)/*error*/exit(32);
 					
 					//ESPERA O ACK
-					 buffer=ACK(0,i.fdUDP);
+					 strcpy(buffer,ACK(0,i.fdUDP));
 					 
 				}while(strncmp("ACK",buffer,3)!=0);
 			}
-			else printf("\nChave %d: Nó %d(%s : %s), chamada %d\n",i.k,p.chave, p.ip,p.porto,i.n_find);//PRINTF DO FIND
+			else printf("\nChave %d: Nó %d(%s : %s), chamada %d\n \nInterface do usuario, escreva um comando:(-h para ajuda):\n",i.k,p.chave, p.ip,p.porto,i.n_find);//PRINTF DO FIND
 			fflush(stdout);
 			i.n_find++;//MUDA O NUMERO DE CHAMADA
 			i.k=-1;//REINICIALIZA FLAG

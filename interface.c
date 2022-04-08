@@ -169,7 +169,7 @@ anel interface (anel i, char str[]){
 		
 		i.leave=1;//FLAG DO COMANDO LEAVE
 		
-		if(i.next.fd!=-1)//FECHA LIGAÇAO CLIENTE-SOCKETS
+		if(i.next.fd!=-1)//FECHA LIGAÇAO CRIADO COM MENSAGENS 
 		{
 			close(i.next.fd);
 		}
@@ -191,7 +191,7 @@ anel interface (anel i, char str[]){
 	
 	else{ printf("\nComando invalido\n");}
 
-	if(quit==1)exit(1);//PARTE DO EXIT
+	if(quit==1)exit(0);//PARTE DO EXIT
 
 	return i;
 }

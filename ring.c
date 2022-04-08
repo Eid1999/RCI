@@ -55,7 +55,7 @@ int main(int argc,char* argv[])
 	char *aux;
 	
 	
-	aux=NULL;
+	
 
 
 	sscanf(argv[1], "%d", &i.eu.chave);
@@ -67,6 +67,8 @@ int main(int argc,char* argv[])
 	novo://PARTE DO COMANDO LEAVE
 	
 	//INICIALIÇÃO DE VARIAVEIS PARA CONTROLE(FLAGS)
+	aux=NULL;
+	
 	i.n_find=0;
 	i.leave=0;
 	i.next.ip=NULL; 
@@ -192,7 +194,7 @@ int main(int argc,char* argv[])
 				addrlen_udp=sizeof(addr_udp);
 				nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);//RECEBE MENSAGEM
 				if(nread==-1)/*error*/exit(30);
-				sendto(i.fdUDP,"ACK",4,0,&addr_udp,addrlen_udp);//ENVIA ACK
+				sendto(i.fdUDP,"ACK\n",5,0,&addr_udp,addrlen_udp);//ENVIA ACK
 				if(strncmp(UDPaux,buffer,nread)==0)break;//VE SE RECEBEU MENSAGEM REPETIDA(ACK NÃO CHEGOU)
 				strncpy(UDPaux,buffer,nread+1);//SALVA MESAGEM PARA COMPARA PROXIMA VEZ
 				if(strncmp("EFND",buffer,4)==0){i.addr=addr_udp;i.addrlen=addrlen_udp;}//SALVA INFORMACAO DO CLIENTE(BENTRY)

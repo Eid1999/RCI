@@ -44,7 +44,7 @@ char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 		n=recvfrom(fd,buffer,30,0,&addr,&addrlen);
 		if(n==-1)/*error*/exit(1);
 		printf("%s\n",buffer);
-		sendto(fd,"ACK",3,0,&addr,addrlen);
+		sendto(fd,"ACK\n",5,0,&addr,addrlen);
 		
 	}
 	freeaddrinfo(res);
