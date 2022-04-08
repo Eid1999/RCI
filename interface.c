@@ -64,7 +64,7 @@ anel interface (anel i, char str[]){
 	//COMANDO FIND
 	else if(strcmp(opt,"f")==0)
 	{
-		i.k=p.chave;//SALVA A CHAVE DE PROCURA
+		i.k[i.n_find]=p.chave;//SALVA A CHAVE DE PROCURA
 		
 		if(j!=2){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
 		

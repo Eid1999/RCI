@@ -191,11 +191,11 @@ anel sub_processo(anel i, char buffer[])
 	if (strcmp(opt,"RSP")==0)
 	{
 		opt="RSP";
-		if(k==i.eu.chave&&n_find==i.n_find)//VERIFICA SE O NÓ É O PROCURADO
+		if(k==i.eu.chave)//VERIFICA SE O NÓ É O PROCURADO
 		{
 			RSP://PARTE DO COMANDO FND(INICIALIZADO PELO BENTRY)
 			
-			if(i.k==-1){//VERIFICA SE ESTA NO COMANDO FIND OU BENTRY
+			if(i.k[i.n_find]==-1){//VERIFICA SE ESTA NO COMANDO FIND OU BENTRY
 			
 				do{//PROCESSO DO ACK
 				
@@ -209,10 +209,13 @@ anel sub_processo(anel i, char buffer[])
 					 
 				}while(strncmp("ACK",buffer,3)!=0);
 			}
-			else printf("\nChave %d: Nó %d(%s : %s), chamada %d\n \nInterface do usuario, escreva um comando:(-h para ajuda):\n",i.k,p.chave, p.ip,p.porto,i.n_find);//PRINTF DO FIND
+			else printf("\nChave %d: Nó %d(%s : %s) \nInterface do usuario, escreva um comando:(-h para ajuda):\n",i.k[i.n_find],p.chave, p.ip,p.porto);//PRINTF DO FIND
 			fflush(stdout);
-			i.n_find++;//MUDA O NUMERO DE CHAMADA
-			i.k=-1;//REINICIALIZA FLAG
+			if(i.n_find<100)i.n_find++;//MUDA O NUMERO DE CHAMADA
+			else {i.n_find=0;memset(i.k, -1, sizeof(i.k));}//REINICIALIZA FLAG
+			
+			
+			
 		}
 		
 		else//PROCURA O NO QUE INICIALIZOU O FIND
@@ -231,9 +234,10 @@ anel sub_processo(anel i, char buffer[])
 	else if(strcmp(opt,"EFND")==0) {
 		//SALVA INFORMAÇAO RECEBIDAS
 		k=p.chave;
-		i.k=-1;
+		
 		//PROCESSO DE PROCURA
 		n_find=i.n_find;
+		i.k[n_find]=-1;
 		p=i.eu;
 		goto find;
 	}

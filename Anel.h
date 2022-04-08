@@ -13,6 +13,7 @@
 #include <sys/socket.h>
 #include <signal.h>
 #include <arpa/inet.h>
+#include <time.h>
 
 //INFORMAÇÕES DO NO
 typedef struct _no {
@@ -34,7 +35,7 @@ typedef struct _anel {
     
     //VARIAVEIS PARA O FIND
     int n_find;//NUMERO DA PROCURA
-    int k;//CHAVE PROCURADA &&  FLAG PARA O BENTRY
+    int k[100];//CHAVE PROCURADA &&  FLAG PARA O BENTRY
     
     //VARIAVEIS PARA BENTRY
     struct sockaddr addr;

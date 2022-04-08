@@ -16,7 +16,7 @@
 #include "Anel.h"
 #define STDIN 0
 #define MAXLINE 1024
-#define mod 15
+#define mod 32
 
 int max(int x, int y)
 {
@@ -52,12 +52,12 @@ int main(int argc,char* argv[])
 	char UDPaux[50];//AUXILIAR DE MENSAGEM UDP
 	anel i;//ESTRUTUTA DO ANEL
 	//AUXILIAR DE MENSAGEM TCP
-	char *aux;
+	char *aux,*aux1;
 	
 	
 	
 
-
+	srand(time(NULL));
 	sscanf(argv[1], "%d", &i.eu.chave);
 	i.eu.ip=argv[2];
 	i.eu.porto=argv[3];
@@ -68,8 +68,9 @@ int main(int argc,char* argv[])
 	
 	//INICIALIÇÃO DE VARIAVEIS PARA CONTROLE(FLAGS)
 	aux=NULL;
+	aux=NULL
 	
-	i.n_find=0;
+	i.n_find=rand()%100;
 	i.leave=0;
 	i.next.ip=NULL; 
 	i.prec.ip=NULL;
@@ -78,7 +79,7 @@ int main(int argc,char* argv[])
 	i.prec.fd=-1;
 	i.fdTCP=-1;
 	i.fdUDP=-1;
-	i.k=-1;
+	memset(i.k, -1, sizeof(i.k));
 
 	//INTERFACE
 	do{
@@ -195,8 +196,11 @@ int main(int argc,char* argv[])
 				nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);//RECEBE MENSAGEM
 				if(nread==-1)/*error*/exit(30);
 				sendto(i.fdUDP,"ACK\n",5,0,&addr_udp,addrlen_udp);//ENVIA ACK
-				if(strncmp(UDPaux,buffer,nread)==0)break;//VE SE RECEBEU MENSAGEM REPETIDA(ACK NÃO CHEGOU)
-				strncpy(UDPaux,buffer,nread+1);//SALVA MESAGEM PARA COMPARA PROXIMA VEZ
+				
+				if((strncmp("FND",buffer,3)==0||strncmp("RSP",buffer,3)==0)){
+					if(strncmp(UDPaux,buffer,nread)==0)break;//VE SE RECEBEU MENSAGEM REPETIDA(ACK NÃO CHEGOU)
+					strncpy(UDPaux,buffer,nread+1);//SALVA MESAGEM PARA COMPARA PROXIMA VEZ
+				}
 				if(strncmp("EFND",buffer,4)==0){i.addr=addr_udp;i.addrlen=addrlen_udp;}//SALVA INFORMACAO DO CLIENTE(BENTRY)
 				printf("%s\n",buffer);
 				i=sub_processo(i,buffer);//PROCESSOS INTERNOS DO ANEL(FND,RSP...)
@@ -207,6 +211,25 @@ int main(int argc,char* argv[])
 			if (FD_ISSET(i.prec.fd, &rset)) {
 				j=read(i.prec.fd,buffer,128);//LE MENSAGEM
 				if(j==-1)/*error*/exit(21);
+				
+				
+				if(strrchr(buffer,'\n')==NULL){//VE SE CHEGOU A MENSAGEM INTEIRA
+					if(aux1==NULL){
+						aux1= (char*) malloc(50);
+						strncpy(aux1,buffer,j);//COPIA A PRIMEIRA PARTE DA MENSAGEM
+					}
+					else strncat(aux1,buffer,j);//COPIA AS OUTRA PARTE DA MENSAGEM
+					break;
+				}
+				else if(aux1!=NULL)
+				{
+					strncat(aux1,buffer,j+1);
+					strcpy(buffer,aux1);//COPIA SEGUNDA PARTE DA MENSAGEM 				
+					//LIBERTA OS AUXILIAR
+					free(aux1);
+					aux1=NULL;
+				}
+				
 				printf("%s\n",buffer);
 				i=sub_processo(i,buffer);//PROCESSOS INTERNOS DO ANEL(RSP,FND...)
 				break;
