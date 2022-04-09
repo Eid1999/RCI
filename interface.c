@@ -11,7 +11,10 @@ anel interface (anel i, char str[]){
    	 int fbits,pbits,lbits;
    	 int quit=0;
    	 static char buffer [50];
-	
+   	 int auxTCP;
+   	 char *auxUDP;
+	auxTCP=0;
+	auxUDP="EMPTY";
 	c = strtok(str, " ");
 	
 	
@@ -74,8 +77,19 @@ anel interface (anel i, char str[]){
 		
 		//ENVIA MENSAGEM
 		opt="FND";
-		if(i.atalho.ip!=NULL && d(i.atalho.chave,p.chave)<d(i.next.chave,p.chave)){mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,i.n_find);}//PROCURA POR ATALHO
-		else {mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);}//PROCURA PELO SUCESSOR
+		if(i.atalho.ip!=NULL && d(i.atalho.chave,p.chave)<d(i.next.chave,p.chave)){auxUDP=mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,i.n_find);}//PROCURA POR ATALHO
+		else {auxTCP=mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);}//PROCURA PELO SUCESSOR
+		if(auxUDP==NULL)
+		{
+			printf("\nCorda Quebrada, continuando pesquisa pelo sucessor\n");
+			i=interface(i,"d");	
+			auxTCP=mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);
+		}
+		if(auxTCP==-1)
+		{
+			printf("\nAnel quebrado, reinicializando programa\n");
+			i=ERRO(i);
+		}
 	
 	}
 	
@@ -85,11 +99,13 @@ anel interface (anel i, char str[]){
 	
 	//COMANDO BENTRY
 	else if(strcmp(opt,"b")==0) {
+		if(i.next.ip!=NULL||i.fdTCP!=-1){printf("\nJa pertence a um anel\n");return i;}
 		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
 		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("\nES TU\n");return i;}//ES TU
 		//ENVIA MENSAGEM
 		opt="EFND";
 		strcpy(buffer,mensagem_udp(opt,p,i.eu,8,p.chave,-1));
+		if(buffer==NULL){printf("\nNó invalido, tente novamente\n");return i;}
 		i=interface(i,buffer);//INICIA O PROCESSO PENTRY
 	}
 		
@@ -98,7 +114,7 @@ anel interface (anel i, char str[]){
 	//COMANDO PENTRY
 	else if(strcmp(opt,"p")==0||strncmp("EPRED",opt,4)==0) {
 		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
-		
+		if(i.next.ip!=NULL||i.fdTCP!=-1){printf("\nJa pertence a um anel\n");return i;}
 		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("\nES TU\n");return i;}//ES TU
 		if(p.chave==i.eu.chave){printf("\nCHAVE INVALIDA\n");return i;}//TENTATIVA DE ENTRAR COM CHAVE INVALIDA
 		
@@ -114,6 +130,7 @@ anel interface (anel i, char str[]){
 		//ENVIA MENSAGEM
 		opt="SELF";
 		i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,-1,0,i.prec.fd);//MENSAGEM COM AS SUAS INFORMAÇOES AO SEU NOVO PRECESSOR
+		if(i.prec.fd==-1){printf("\nNó invalido, tente novamente\n");i=ERRO(i);}
 		return i;
 		     
 	}

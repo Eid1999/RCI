@@ -19,7 +19,7 @@ char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 	hints.ai_family=AF_INET;//IPv4
 	hints.ai_socktype=SOCK_DGRAM;//UDP socket
 	errcode=getaddrinfo(dest.ip,dest.porto,&hints,&res);
-	if(errcode!=0)/*error*/exit(1);
+	if(errcode!=0)/*error*/return NULL;
 	
 	
 	//CRIA STRING DE ENVIO
@@ -31,7 +31,7 @@ char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 	NOACK:
 	//ENVIA STRING
 	if(nbits!=0)n=sendto(fd,ptr,nbits,0,res->ai_addr,res->ai_addrlen);
-	if(n==-1)/*error*/exit(32);
+	if(n==-1)/*error*/return NULL;
 	
        strcpy(buffer,ACK(0,fd));//ESPERA ACK
        

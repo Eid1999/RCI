@@ -33,6 +33,33 @@ int d(int d1,int d2){
        while(c<0)c=c+mod;
        return c;
 }
+anel ERRO(anel i)
+{
+	//LIMPA INFORMAÇOES
+	 if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);i.prec.ip=NULL;i.prec.porto=NULL;}
+	if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);i.next.ip=NULL;i.next.porto=NULL;i.leave=1;}//FLAG DO COMANDO LEAVE}
+	if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);i.atalho.ip=NULL;i.atalho.porto=NULL;}
+	
+	
+	
+	if(i.next.fd!=-1)//FECHA LIGAÇAO CRIADO COM MENSAGENS 
+	{
+		close(i.next.fd);
+	}
+	if(i.prec.fd!=-1)
+	{
+		close(i.prec.fd);
+	}
+	
+	//FECHA SOCKETS
+	if(i.fdTCP!=-1){
+		close(i.fdTCP);
+		close(i.fdUDP);
+	}
+	return i;
+
+}
+
 
 int main(int argc,char* argv[])
 {
@@ -42,6 +69,12 @@ int main(int argc,char* argv[])
 	fd_set rset;
 	struct sockaddr addr_udp, addr_tcp;
 	socklen_t addrlen_udp,addrlen_tcp;
+	struct sigaction act;
+	
+	
+	memset(&act,0,sizeof act);
+	act.sa_handler=SIG_IGN;
+	if(sigaction(SIGPIPE,&act,NULL)==-1)/*error*/exit(1);
 	
 	ssize_t nread;
 	char buffer[128];
@@ -68,7 +101,7 @@ int main(int argc,char* argv[])
 	
 	//INICIALIÇÃO DE VARIAVEIS PARA CONTROLE(FLAGS)
 	aux=NULL;
-	aux=NULL
+	aux1=NULL;
 	
 	i.n_find=rand()%100;
 	i.leave=0;
