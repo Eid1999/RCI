@@ -79,13 +79,13 @@ anel interface (anel i, char str[]){
 		opt="FND";
 		if(i.atalho.ip!=NULL && d(i.atalho.chave,p.chave)<d(i.next.chave,p.chave)){auxUDP=mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,i.n_find);}//PROCURA POR ATALHO
 		else {auxTCP=mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);}//PROCURA PELO SUCESSOR
-		if(auxUDP==NULL)
+		if(auxUDP==NULL)//ERRO NA COMUNICAÇÃO DE UDP
 		{
 			printf("\nCorda Quebrada, continuando pesquisa pelo sucessor\n");
 			i=interface(i,"d");	
 			auxTCP=mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);
 		}
-		if(auxTCP==-1)
+		if(auxTCP==-1)//ERRO NA COMUNICAÇÃO DE TCP
 		{
 			printf("\nAnel quebrado, reinicializando programa\n");
 			i=ERRO(i);

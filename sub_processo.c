@@ -64,6 +64,10 @@ anel sub_processo(anel i, char buffer[])
 		
 		if(i.prec.ip==NULL)// PENTRY NO ANEL UNITARIO
 		{
+			//ENVIA MENSAGEM E SALVA SOCKET DO PREDECESSOR
+			opt="SELF";
+			i.prec.fd=mensagem_tcp(opt,p,i.eu,pbits,-1,0,-1);
+			if(i.prec.fd==-1){close(i.AUX);return i;}//ERRO NA COMUNICAÇÃO
 			//ALOCA MEMORIA DOS COMPONENTES DO ANEL
 			i.prec.porto= (char*) malloc(50);
 			i.prec.ip= (char*) malloc(50);
@@ -79,9 +83,8 @@ anel sub_processo(anel i, char buffer[])
 			memcpy(i.next.porto,p.porto,50);
 			memcpy(i.next.ip,i.prec.ip,50);
 			
-			//ENVIA MENSAGEM E SALVA SOCKET DO PREDECESSOR
-			opt="SELF";
-			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,-1,0,-1);
+			
+			
 			
 			
 		}
@@ -99,14 +102,15 @@ anel sub_processo(anel i, char buffer[])
 			i.next.chave=p.chave;
 			//SALVA SOCKET DO NOVO SUCESSOR
 			i.next.fd=i.AUX;
-
+			
 		}
 		
 		else//SEGUNDA ETAPA DO PENTRY E ULTIMA DO LEAVE 
 		{	
 			//ENVIA MENSAGEM
 			opt="PRED";
-			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))mensagem_tcp(opt,i.next,p,pbits2,-1,0,i.next.fd);//DIFERENCIA ENTRE O PROCESSO DO PENTRY E LEAVE
+			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))auxTCP=mensagem_tcp(opt,i.next,p,pbits2,-1,0,i.next.fd);//DIFERENCIA ENTRE O PROCESSO DO PENTRY E LEAVE
+			if(auxTCP==-1){close(i.AUX);return i;}//ERRO NA COMUNICAÇÃO
 			//SALVA INFORMAÇÃO RECEBIDA
 			memcpy(i.next.ip,p.ip,50);
 			memcpy(i.next.porto,p.porto,50);
@@ -139,6 +143,7 @@ anel sub_processo(anel i, char buffer[])
 			i.prec.fd=-1;
 			//ENVIA MENSAGEM AO NOVO PREDECESSOR E SALVA O SOCKET CRIADO
 			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,-1,0,-1);
+			if(i.prec.fd==-1){printf("\nAnel quebrado, reinicializando programa\n");i=ERRO(i);}//ERRO DE COMUNICAÇÃO DE TCP
 		}
 		else// LEAVE COM UM ANEL COM DOIS NÓS
 		{
@@ -178,14 +183,14 @@ anel sub_processo(anel i, char buffer[])
 			else {auxTCP=mensagem_tcp(opt,i.next,p,fbits2,k,n_find,i.next.fd);}
 		}
 		
-		if(auxUDP==NULL)
+		if(auxUDP==NULL)//ERRO DE COMUNICAÇÃO POR UDP
 		{
 			printf("Corda quebrada, continuando pesquisa pelo sucessor");
 			i=interface(i,"d");	
 			if (strcmp(opt,"FND")==0)auxTCP=mensagem_tcp(opt,i.next,p,fbits2,k,n_find,i.next.fd);
 			else auxTCP=mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,n_find,i.next.fd);
 		}
-		if(auxTCP==-1)
+		if(auxTCP==-1)//ERRO DE COMUNICAÇÃO POR TCP
 		{
 			printf("Anel quebrado, reinicializando programa");
 			i=ERRO(i);
@@ -237,13 +242,13 @@ anel sub_processo(anel i, char buffer[])
 			
 		}
 		
-		if(auxUDP==NULL)
+		if(auxUDP==NULL)//ERRO DE COMUNICAÇÃO DE UDP
 		{
 			printf("Corda quebrada, continuando pesquisa pelo sucessor");
 			i=interface(i,"d");	
 			auxTCP=mensagem_tcp(opt,i.next,p,fbits2,k,n_find,i.next.fd);
 		}
-		if(auxTCP==-1)
+		if(auxTCP==-1)//ERRO DE COMUNICAÇÃO DE TCP
 		{
 			printf("Anel quebrado, reinicializando programa");
 			i=ERRO(i);
