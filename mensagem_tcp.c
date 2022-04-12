@@ -37,10 +37,6 @@ int mensagem_tcp(char *opt,no dest,no envio,int nbits,int k, int n_find, int fd)
 		else snprintf(ptr,nbits,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
 
 		//ENVIA MENSAGEM
-		memset(&act,0,sizeof act);
-		act.sa_handler=SIG_IGN;
-		if(sigaction(SIGPIPE,&act,NULL)==-1)/*error*/return -1;
-		
 		aux=ptr;
 		nleft=nbits;
 		while(nleft>0){nwritten=write(fd,aux,nbits);

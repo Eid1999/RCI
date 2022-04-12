@@ -183,7 +183,7 @@ anel sub_processo(anel i, char buffer[])
 			else {auxTCP=mensagem_tcp(opt,i.next,p,fbits2,k,n_find,i.next.fd);}
 		}
 		
-		if(auxUDP==NULL)//ERRO DE COMUNICAÇÃO POR UDP
+		if(strcmp(auxUDP,"ERRO")==0)//ERRO DE COMUNICAÇÃO POR UDP
 		{
 			printf("Corda quebrada, continuando pesquisa pelo sucessor");
 			i=interface(i,"d");	
@@ -227,7 +227,7 @@ anel sub_processo(anel i, char buffer[])
 			}
 			else printf("\nChave %d: Nó %d(%s : %s) \nInterface do usuario, escreva um comando:(-h para ajuda):\n",i.k[i.n_find],p.chave, p.ip,p.porto);//PRINTF DO FIND
 			fflush(stdout);
-			if(i.n_find<100)i.n_find++;//MUDA O NUMERO DE CHAMADA
+			if(i.n_find<99)i.n_find++;//MUDA O NUMERO DE CHAMADA
 			else {i.n_find=0;memset(i.k, -1, sizeof(i.k));}//REINICIALIZA FLAG
 			
 			
@@ -242,7 +242,7 @@ anel sub_processo(anel i, char buffer[])
 			
 		}
 		
-		if(auxUDP==NULL)//ERRO DE COMUNICAÇÃO DE UDP
+		if(strcmp(auxUDP,"ERRO")==0)//ERRO DE COMUNICAÇÃO DE UDP
 		{
 			printf("Corda quebrada, continuando pesquisa pelo sucessor");
 			i=interface(i,"d");	
@@ -252,13 +252,7 @@ anel sub_processo(anel i, char buffer[])
 		{
 			printf("Anel quebrado, reinicializando programa");
 			i=ERRO(i);
-		}
-		
-		
-		
-		
-		
-		
+		}		
 	}
 	
 	

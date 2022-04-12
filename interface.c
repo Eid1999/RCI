@@ -105,7 +105,7 @@ anel interface (anel i, char str[]){
 		//ENVIA MENSAGEM
 		opt="EFND";
 		strcpy(buffer,mensagem_udp(opt,p,i.eu,8,p.chave,-1));
-		if(buffer==NULL){printf("\nNó invalido, tente novamente\n");return i;}
+		if(strcmp(buffer,"ERRO")==0){printf("\nNó invalido, tente novamente\n");return i;}
 		i=interface(i,buffer);//INICIA O PROCESSO PENTRY
 	}
 		

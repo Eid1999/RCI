@@ -5,7 +5,7 @@
 char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 {
 	struct addrinfo hints,*res;
-	int fd,errcode;
+	int fd,errcode, j=0;
 	ssize_t n;
 	char ptr[nbits];
 	static char buffer [50];
@@ -19,7 +19,7 @@ char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 	hints.ai_family=AF_INET;//IPv4
 	hints.ai_socktype=SOCK_DGRAM;//UDP socket
 	errcode=getaddrinfo(dest.ip,dest.porto,&hints,&res);
-	if(errcode!=0)/*error*/return NULL;
+	if(errcode!=0)/*error*/return "ERRO";
 	
 	
 	//CRIA STRING DE ENVIO
@@ -31,10 +31,11 @@ char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 	NOACK:
 	//ENVIA STRING
 	if(nbits!=0)n=sendto(fd,ptr,nbits,0,res->ai_addr,res->ai_addrlen);
-	if(n==-1)/*error*/return NULL;
+	if(n==-1)/*error*/return "ERRO";
 	
        strcpy(buffer,ACK(0,fd));//ESPERA ACK
-       
+       j++;
+       if(j==2){return "ERRO";}
        if(strncmp(buffer,"ACK",3)!=0){goto NOACK;}//SE RECEBER ACK CONTINUA, SE NÃO ENVIA A MENSAGEM DENOVO
 	printf("%s\n",buffer);//APAGAR DPS
 	
