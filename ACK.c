@@ -13,14 +13,7 @@ char *ACK(int fdTCP, int fdUDP)//TROCAR PARA MENSAGENS
 	struct timeval timer;
 	struct sockaddr addr_udp;
 	maxfdp1 = max(fdUDP, fdTCP)+1 ;
-	
-	
-	
-		
-		
-		
-		
-    	
+
 	strcpy(buffer,"ERRO");
  	FD_ZERO(&rset);// LIMPA
 	// PROCURA DE SINAL TCP, UDP E DO USUARIO
@@ -45,7 +38,6 @@ char *ACK(int fdTCP, int fdUDP)//TROCAR PARA MENSAGENS
 		addrlen_udp=sizeof(addr_udp);
 		nread=recvfrom(fdUDP,buffer,5,0, &addr_udp,&addrlen_udp);
 		if(nread==-1)/*error*/exit(4);
-		printf("%s",buffer);
 		if (strncmp("ACK",buffer,3)==0)return buffer;
 	}
 	return buffer;

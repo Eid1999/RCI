@@ -63,8 +63,7 @@ int d(int d1,int d2);//CALCULAR A DISTANCIA(d2-d1)mod
 
 int max(int x, int y);//CALCULA O MAIOR SOCKET PARA SELECT
 
-
-anel ERRO(anel i);
+anel ERRO(anel i);//QUEBRA DE ANEL 
 
 
 #endif /* ANEL_DOT_H */

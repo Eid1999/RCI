@@ -25,9 +25,6 @@ char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 	//CRIA STRING DE ENVIO
 	if(n_find!=-1)snprintf(ptr,nbits,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
 	else snprintf(ptr,nbits,"%s %d\n",opt,envio.chave);
-	
-	
-	
 	NOACK:
 	//ENVIA STRING
 	if(nbits!=0)n=sendto(fd,ptr,nbits,0,res->ai_addr,res->ai_addrlen);
@@ -35,7 +32,7 @@ char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 	
        strcpy(buffer,ACK(0,fd));//ESPERA ACK
        j++;
-       if(j==2){return "ERRO";}
+       if(j==5){return "ERRO";}
        if(strncmp(buffer,"ACK",3)!=0){goto NOACK;}//SE RECEBER ACK CONTINUA, SE NÃO ENVIA A MENSAGEM DENOVO
 	printf("%s\n",buffer);//APAGAR DPS
 	
