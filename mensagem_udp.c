@@ -23,8 +23,8 @@ char *mensagem_udp(char *opt, no dest, no envio,int k, int n_find)
 	
 	
 	//CRIA STRING DE ENVIO
-	if(n_find!=-1)sprintf(ptr,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
-	else sprintf(ptr,"%s %d\n",opt,envio.chave);
+	if(n_find!=-1)sprintf(ptr,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);//FND OU RSP
+	else sprintf(ptr,"%s %d\n",opt,envio.chave);//EFND
 	NOACK:
 	//ENVIA STRING
 	n=sendto(fd,ptr,strlen(ptr)+1,0,res->ai_addr,res->ai_addrlen);
@@ -34,15 +34,13 @@ char *mensagem_udp(char *opt, no dest, no envio,int k, int n_find)
        j++;
        if(j==5){return "ERRO";}
        if(strncmp(buffer,"ACK",3)!=0){goto NOACK;}//SE RECEBER ACK CONTINUA, SE NÃO ENVIA A MENSAGEM DENOVO
-	printf("%s\n",buffer);//APAGAR DPS
 	
 	//PROCESSO DE RECEBIMENTO DO ENTRY
 	if(strncmp(opt,"EFND",4)==0){
 		addrlen=sizeof(addr);
 		n=recvfrom(fd,buffer,30,0,&addr,&addrlen);
 		if(n==-1)/*error*/exit(1);
-		printf("%s\n",buffer);
-		sendto(fd,"ACK\n",5,0,&addr,addrlen);
+		sendto(fd,"ACK",4,0,&addr,addrlen);
 		
 	}
 	freeaddrinfo(res);

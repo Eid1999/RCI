@@ -33,8 +33,8 @@ int mensagem_tcp(char *opt,no dest,no envio,int k, int n_find, int fd)
        }
 
 		//CRIA MENSAGEM
-		if(k==-1)sprintf(ptr,"%s %d %s %s\n",opt,envio.chave,envio.ip,envio.porto);
-		else sprintf(ptr,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
+		if(k==-1)sprintf(ptr,"%s %d %s %s\n",opt,envio.chave,envio.ip,envio.porto);//MENSAGEM SELF OU PRED
+		else sprintf(ptr,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);//MENSAGEM FND OU RSP
 
 		//ENVIA MENSAGEM
 		aux=ptr;

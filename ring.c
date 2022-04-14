@@ -18,6 +18,7 @@
 #define MAXLINE 1024
 #define mod 32
 
+//CALCULO DO MAIOR SOCKET
 int max(int x, int y)
 {
     if (x > y)
@@ -35,9 +36,10 @@ int d(int d1,int d2){
 }
 anel ERRO(anel i)
 {
-	//LIMPA INFORMAÇOES
+	//INFORMA A QUEBRA DO ANEL AOS SEUS VIZINHOS
 	mensagem_tcp("ERRO",i.prec,i.eu,-1,0,-1);
 	mensagem_tcp("ERRO",i.next,i.eu,-1,0,-1);
+	//LIMPA INFORMAÇOES
 	 if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);i.prec.ip=NULL;i.prec.porto=NULL;}
 	if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);i.next.ip=NULL;i.next.porto=NULL;i.leave=1;}//FLAG DO COMANDO LEAVE}
 	if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);i.atalho.ip=NULL;i.atalho.porto=NULL;}
@@ -92,28 +94,37 @@ int main(int argc,char* argv[])
 	
 	
 
-	srand(time(NULL));
+	srand(time(NULL));//INICIA RAND
+	
+	//GUARDA INFORMAÇOES
 	sscanf(argv[1], "%d", &i.eu.chave);
 	i.eu.ip=argv[2];
 	i.eu.porto=argv[3];
+
 
 	printf("\nBem vindo ao ring\n");
 
 	novo://PARTE DO COMANDO LEAVE
 	
-	//INICIALIÇÃO DE VARIAVEIS PARA CONTROLE(FLAGS)
+	//INICIALIZAÇÃO DE VARIAVEIS COM VALORES PARA CONTROLE(FLAGS)
+	
 	aux=NULL;
 	aux1=NULL;
 	
-	i.n_find=rand()%100;
-	i.leave=0;
+	i.n_find=rand()%100;//NUMERO DE PROCURA
+	
+	i.leave=0;//FLAG DO LEAVE
+	
 	i.next.ip=NULL; 
 	i.prec.ip=NULL;
 	i.atalho.ip=NULL;
+	
 	i.next.fd=-1;
 	i.prec.fd=-1;
+	
 	i.fdTCP=-1;
 	i.fdUDP=-1;
+	
 	memset(i.k, -1, sizeof(i.k));
 
 	//INTERFACE
@@ -122,11 +133,11 @@ int main(int argc,char* argv[])
 		fflush(stdin);
 		fgets(str, 50, stdin);
 		i=interface(i,str);
-	}while((i.prec.ip==NULL && i.fdTCP==-1));//SAI SE FORMAR UM NO(COMANDO N) OU ENTRAR EM UM ANEL(NEW, PENTRY OU BENTRY)
+	}while((i.prec.ip==NULL && i.fdTCP==-1));//SAI SE FORMAR UM NOVO NO(NEW) OU ENTRAR EM UM ANEL(PENTRY OU BENTRY)
 	
 	
 	
-	//CRIA OS SOCKETS DEPOIS DE FAZER PARTE DE UM ANEL
+	//CRIA OS SOCKETS
 	//TCP SOCKET
 	if((i.fdTCP=socket(AF_INET,SOCK_STREAM,0))==-1)exit(11);//error
 
@@ -174,12 +185,11 @@ int main(int argc,char* argv[])
 		
 		
 		FD_ZERO(&rset);// LIMPA SELECT
-		//INILICILIZA SELECT 
-		
-		FD_SET(i.fdTCP, &rset);
+		//SELECT 
+		FD_SET(i.fdTCP, &rset);//SERVIDOR DE TCP NO SELECT
 		if(i.prec.fd!=-1){FD_SET(i.prec.fd, &rset);maxfdp2 = max(i.prec.fd, maxfdp1)+1 ;}//SE TIVER PREDECESSOR PROCURA MENSAGEM DELE
-		FD_SET(i.fdUDP, &rset);
-		FD_SET(STDIN, &rset);
+		FD_SET(i.fdUDP, &rset);//SERVIDOR DE UDP NO SELECT
+		FD_SET(STDIN, &rset);//TECLADO
 		
 		nready = select(maxfdp2, &rset, NULL, NULL, NULL);//INICIA SELECT
 		if(nready<=0)/*error*/exit(19);
@@ -187,7 +197,7 @@ int main(int argc,char* argv[])
 		for (;;) {
 			
 
-			//INPUT DO USUARIO, ENTRA NO INTERFACE
+			//INPUT DO USUARIO, ENTRA NA INTERFACE
 			if (FD_ISSET(STDIN, &rset)){
 				fgets(str, 50, stdin);
 				i=interface(i,str);
@@ -200,28 +210,32 @@ int main(int argc,char* argv[])
 				if((newfd=accept(i.fdTCP,&addr_tcp,&addrlen_tcp))==-1)/*error*/exit(20);//ACEITA E CRIA SOCKET(PENTRY/BENTRY)
 				j=read(newfd,buffer,128);//LE MENSAGEM
 				if(j==-1)/*error*/exit(21);
+				
+				
+				
 						
 				if(strrchr(buffer,'\n')==NULL){//VE SE CHEGOU A MENSAGEM INTEIRA
 					if(aux==NULL){
 						aux= (char*) malloc(50);
 						strncpy(aux,buffer,j);//COPIA A PRIMEIRA PARTE DA MENSAGEM
 					}
-					else strncat(aux,buffer,j);//COPIA AS OUTRA PARTE DA MENSAGEM
+					else strncat(aux,buffer,j);//JUNTA AS DIFERENTES PARTES DA MENSAGEM
 					break;
 				}
 				else if(aux!=NULL)
 				{
-					strncat(aux,buffer,j+1);
-					strcpy(buffer,aux);//COPIA SEGUNDA PARTE DA MENSAGEM 				
-					//LIBERTA OS AUXILIAR
+					strncat(aux,buffer,j+1);//COPIA ULTIMA PARTE DA MENSAGEM
+					strcpy(buffer,aux);//RETIRA A MENSAGEM DO BUFFER				
+					//LIBERTA O AUXILIAR
 					free(aux);
 					aux=NULL;
 				}
 				//
 				
-				printf("%s\n",buffer);
-				if(strncmp("SELF",buffer,4)==0){i.AUX=newfd;}//GRAVA FD DO CLIENTE
-				i=sub_processo(i,buffer);//PROCESSOS INTERNOS DO ANEL(SELF, PRED..)
+				
+				
+				if(strncmp("SELF",buffer,4)==0){i.AUX=newfd;}//GRAVA FD DO CLIENTE NO AUXILIAR
+				i=sub_processo(i,buffer);//PROCESSOS INTERNOS DO ANEL(SELF, PRED...)
 				break;
 			}
 			
@@ -230,14 +244,14 @@ int main(int argc,char* argv[])
 				addrlen_udp=sizeof(addr_udp);
 				nread=recvfrom(i.fdUDP,buffer,128,0, &addr_udp,&addrlen_udp);//RECEBE MENSAGEM
 				if(nread==-1)/*error*/exit(30);
-				sendto(i.fdUDP,"ACK\n",5,0,&addr_udp,addrlen_udp);//ENVIA ACK
+				
+				sendto(i.fdUDP,"ACK",4,0,&addr_udp,addrlen_udp);//ENVIA ACK
 				
 				if((strncmp("FND",buffer,3)==0||strncmp("RSP",buffer,3)==0)){
 					if(strncmp(UDPaux,buffer,nread)==0)break;//VE SE RECEBEU MENSAGEM REPETIDA(ACK NÃO CHEGOU)
-					strncpy(UDPaux,buffer,nread+1);//SALVA MESAGEM PARA COMPARA PROXIMA VEZ
+					strncpy(UDPaux,buffer,nread+1);//SALVA MESAGEM PARA COMPARAR NA PROXIMA VEZ
 				}
-				if(strncmp("EFND",buffer,4)==0){i.addr=addr_udp;i.addrlen=addrlen_udp;}//SALVA INFORMACAO DO CLIENTE(BENTRY)
-				printf("%s\n",buffer);
+				if(strncmp("EFND",buffer,4)==0){i.addr=addr_udp;i.addrlen=addrlen_udp;}//SALVA INFORMACAO DO CLIENTE(PROCESSO BENTRY)
 				i=sub_processo(i,buffer);//PROCESSOS INTERNOS DO ANEL(FND,RSP...)
 				break;
 				
@@ -258,14 +272,12 @@ int main(int argc,char* argv[])
 				}
 				else if(aux1!=NULL)
 				{
-					strncat(aux1,buffer,j+1);
-					strcpy(buffer,aux1);//COPIA SEGUNDA PARTE DA MENSAGEM 				
-					//LIBERTA OS AUXILIAR
+					strncat(aux1,buffer,j+1);//COPIA ULTIMA PARTE DA MENSAGEM
+					strcpy(buffer,aux1);//RETIRA A MENSAGEM DO AUXILIAR 				
+					//LIBERTA O AUXILIAR
 					free(aux1);
 					aux1=NULL;
 				}
-				
-				printf("%s\n",buffer);
 				i=sub_processo(i,buffer);//PROCESSOS INTERNOS DO ANEL(RSP,FND...)
 				break;
 			}
