@@ -91,7 +91,7 @@ anel interface (anel i, char str[]){
 	//COMANDO BENTRY
 	else if(strcmp(opt,"b")==0) {
 		if(i.next.ip!=NULL||i.fdTCP!=-1){printf("\nJa pertence a um anel\n");return i;}
-		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
+		if(j!=4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
 		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("\nES TU\n");return i;}//ES TU
 		//ENVIA MENSAGEM
 		opt="EFND";
@@ -104,7 +104,7 @@ anel interface (anel i, char str[]){
 		
 	//COMANDO PENTRY
 	else if(strcmp(opt,"p")==0||strncmp("EPRED",opt,4)==0) {
-		if(j<4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
+		if(j!=4){printf("\nComando incompleto\n");return i;}//ERRO NO COMANDO
 		if(i.next.ip!=NULL||i.fdTCP!=-1){printf("\nJa pertence a um anel\n");return i;}
 		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("\nES TU\n");return i;}//ES TU
 		if(p.chave==i.eu.chave){printf("\nCHAVE INVALIDA\n");return i;}//TENTATIVA DE ENTRAR COM CHAVE INVALIDA
@@ -128,7 +128,7 @@ anel interface (anel i, char str[]){
 	//COMANDO CHORD
 	else if(strcmp(opt,"c")==0) {
 		
-		if(j<4){printf("\nComando invalido\n");return i;}//ERRO NO COMANDO
+		if(j!=4){printf("\nComando invalido\n");return i;}//ERRO NO COMANDO
 		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("\nES TU\n");return i;}//ES TU
 		//ALOCA MEMORIA
 		i.atalho.porto= (char*) malloc(50);

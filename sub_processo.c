@@ -55,7 +55,7 @@ anel sub_processo(anel i, char buffer[])
 	//PROCESSO SELF, USADO NO LEAVE E PENTRY
 	if (strcmp(opt,"SELF")==0)
 	{
-		
+		if(j!=4){return i;}//ERRO NO COMANDO
 		if(i.prec.ip==NULL)// PENTRY NO ANEL UNITARIO
 		{
 			//ENVIA MENSAGEM E SALVA SOCKET DO PREDECESSOR
@@ -102,6 +102,7 @@ anel sub_processo(anel i, char buffer[])
 		else//SEGUNDA ETAPA DO PENTRY E ULTIMA DO LEAVE 
 		{	
 			//ENVIA MENSAGEM
+			
 			opt="PRED";
 			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))auxTCP=mensagem_tcp(opt,i.next,p,-1,0,i.next.fd);//DIFERENCIA ENTRE O PROCESSO DO PENTRY E LEAVE
 			if(auxTCP==-1){close(i.AUX);return i;}//ERRO NA COMUNICAÇÃO
@@ -123,7 +124,7 @@ anel sub_processo(anel i, char buffer[])
 	
 	//PROCESSO PRED, USADO NO LEAVE E PENTRY
 	else if (strcmp(opt,"PRED")==0){
-	
+		if(j!=4){return i;}//ERRO NO COMANDO
 		opt="SELF";		
 		if( p.chave!=i.eu.chave)//SEGUNDA ETAPA DO LEAVE E PENULTIMA ETAPA DO PENTRY
 		{
@@ -159,6 +160,7 @@ anel sub_processo(anel i, char buffer[])
 	else if (strcmp(opt,"FND")==0)
 	{
 		find://PARTE DO COMANDO BENTRY
+		if(j!=6){return i;}//ERRO NO COMANDO
 		
 		if(k==i.eu.chave|| (i.next.ip==NULL||(d(i.eu.chave,k)<d(i.next.chave,k)&&(i.atalho.ip==NULL||d(i.eu.chave,k)<d(i.atalho.chave,k)))))//VERIFICA SE É O NÓ PROCURADO OU PERTENCE
 		{
@@ -201,6 +203,7 @@ anel sub_processo(anel i, char buffer[])
 	else if (strcmp(opt,"RSP")==0)
 	{
 		opt="RSP";
+		if(j!=6){return i;}//ERRO NO COMANDO
 		if(k==i.eu.chave)//VERIFICA SE O NÓ É O PROCURADO
 		{
 			RSP://PARTE DO COMANDO FND(INICIALIZADO PELO BENTRY)
@@ -255,13 +258,16 @@ anel sub_processo(anel i, char buffer[])
 	//PROCESSO EFND, USADO NO BENTRY 
 	else if(strcmp(opt,"EFND")==0) {
 		//SALVA INFORMAÇAO RECEBIDAS
+		if(j!=2){return i;}//ERRO NO COMANDO
 		k=p.chave;
 		
 		//PROCESSO DE PROCURA
+		j=6;
 		n_find=i.n_find;
 		i.k[n_find]=-1;
 		p=i.eu;
 		goto find;
 	}
+	else if (strcmp(opt,"ERRO")==0){printf("\nAnel quebrado, reinicializando programa\n");i=ERRO(i);}
 	return i;
 }

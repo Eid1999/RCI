@@ -36,6 +36,8 @@ int d(int d1,int d2){
 anel ERRO(anel i)
 {
 	//LIMPA INFORMAÇOES
+	mensagem_tcp("ERRO",i.prec,i.eu,-1,0,-1);
+	mensagem_tcp("ERRO",i.next,i.eu,-1,0,-1);
 	 if(i.prec.ip!=NULL){free(i.prec.ip);free(i.prec.porto);i.prec.ip=NULL;i.prec.porto=NULL;}
 	if(i.next.ip!=NULL){free(i.next.ip);free(i.next.porto);i.next.ip=NULL;i.next.porto=NULL;i.leave=1;}//FLAG DO COMANDO LEAVE}
 	if(i.atalho.ip!=NULL){free(i.atalho.ip);free(i.atalho.porto);i.atalho.ip=NULL;i.atalho.porto=NULL;}
