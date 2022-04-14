@@ -1,11 +1,11 @@
 
 #include "Anel.h"
 
-int mensagem_tcp(char *opt,no dest,no envio,int nbits,int k, int n_find, int fd)
+int mensagem_tcp(char *opt,no dest,no envio,int k, int n_find, int fd)
 {
         int n;
        ssize_t nwritten;
-       char ptr[nbits],*aux;
+       char ptr[50],*aux;
        struct sigaction act;
        ssize_t nleft;
 	
@@ -33,13 +33,13 @@ int mensagem_tcp(char *opt,no dest,no envio,int nbits,int k, int n_find, int fd)
        }
 
 		//CRIA MENSAGEM
-		if(k==-1)snprintf(ptr,nbits,"%s %d %s %s\n",opt,envio.chave,envio.ip,envio.porto);
-		else snprintf(ptr,nbits,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
+		if(k==-1)sprintf(ptr,"%s %d %s %s\n",opt,envio.chave,envio.ip,envio.porto);
+		else sprintf(ptr,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
 
 		//ENVIA MENSAGEM
 		aux=ptr;
-		nleft=nbits;
-		while(nleft>0){nwritten=write(fd,aux,nbits);
+		nleft=strlen(ptr)+1;
+		while(nleft>0){nwritten=write(fd,aux,nleft);
 			if(nwritten<=0)/*error*/return -1;
 			nleft-=nwritten;
 			aux+=nwritten;

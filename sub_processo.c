@@ -14,7 +14,7 @@ anel sub_processo(anel i, char buffer[])
 	
 	p.porto= (char*) malloc(50);
 	p.ip= (char*) malloc(50);
-	int pbits2,pbits,fbits,fbits2,n;
+	int n;
 
 	//SEPARA A STRING RECEBIDAS
 	c = strtok(buffer, " ");
@@ -51,12 +51,6 @@ anel sub_processo(anel i, char buffer[])
 		j++;
 	}
 	
-	//CALCULA TAMANHO DA STRING QUE SERA ENVIADA	
-	fbits=(strlen(opt)+strlen(i.eu.ip)+strlen(i.eu.porto)+16);
-	fbits2=(strlen(opt)+strlen(p.ip)+strlen(p.porto)+16);
-	pbits=(strlen(opt)+strlen(i.eu.ip)+strlen(i.eu.porto)+10);
-	pbits2=(strlen(opt)+strlen(p.ip)+strlen(p.porto)+10);
-	
 	
 	//PROCESSO SELF, USADO NO LEAVE E PENTRY
 	if (strcmp(opt,"SELF")==0)
@@ -66,7 +60,7 @@ anel sub_processo(anel i, char buffer[])
 		{
 			//ENVIA MENSAGEM E SALVA SOCKET DO PREDECESSOR
 			opt="SELF";
-			i.prec.fd=mensagem_tcp(opt,p,i.eu,pbits,-1,0,-1);
+			i.prec.fd=mensagem_tcp(opt,p,i.eu,-1,0,-1);
 			if(i.prec.fd==-1){close(i.AUX);return i;}//ERRO NA COMUNICAÇÃO
 			//ALOCA MEMORIA DOS COMPONENTES DO ANEL
 			i.prec.porto= (char*) malloc(50);
@@ -109,7 +103,7 @@ anel sub_processo(anel i, char buffer[])
 		{	
 			//ENVIA MENSAGEM
 			opt="PRED";
-			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))auxTCP=mensagem_tcp(opt,i.next,p,pbits2,-1,0,i.next.fd);//DIFERENCIA ENTRE O PROCESSO DO PENTRY E LEAVE
+			if(d(i.eu.chave,i.next.chave)>d(i.eu.chave,p.chave))auxTCP=mensagem_tcp(opt,i.next,p,-1,0,i.next.fd);//DIFERENCIA ENTRE O PROCESSO DO PENTRY E LEAVE
 			if(auxTCP==-1){close(i.AUX);return i;}//ERRO NA COMUNICAÇÃO
 			//SALVA INFORMAÇÃO RECEBIDA
 			memcpy(i.next.ip,p.ip,50);
@@ -142,7 +136,7 @@ anel sub_processo(anel i, char buffer[])
 			close(i.prec.fd);
 			i.prec.fd=-1;
 			//ENVIA MENSAGEM AO NOVO PREDECESSOR E SALVA O SOCKET CRIADO
-			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,-1,0,-1);
+			i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,-1,0,-1);
 			if(i.prec.fd==-1){printf("\nAnel quebrado, reinicializando programa\n");i=ERRO(i);}//ERRO DE COMUNICAÇÃO DE TCP
 		}
 		else// LEAVE COM UM ANEL COM DOIS NÓS
@@ -171,24 +165,24 @@ anel sub_processo(anel i, char buffer[])
 			opt="RSP";//INICIA PROCESSO DE RESPOSTA
 			if(p.chave==i.eu.chave){goto RSP;}//BENTRY, SE O NO QUE FOI CHAMADO FOR O MAIS PROXIMO
 			
-			if(i.atalho.ip!=NULL && d(i.atalho.chave,p.chave)<d(i.next.chave,p.chave)){auxUDP=mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,n_find);}//PROCURA O MENOR CAMINHO PARA A PROCURA, ATALHO OU SUCESSOR
-			else {auxTCP=mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,n_find,i.next.fd);}
+			if(i.atalho.ip!=NULL && d(i.atalho.chave,p.chave)<d(i.next.chave,p.chave)){auxUDP=mensagem_udp(opt,i.atalho,i.eu,p.chave,n_find);}//PROCURA O MENOR CAMINHO PARA A PROCURA, ATALHO OU SUCESSOR
+			else {auxTCP=mensagem_tcp(opt,i.next,i.eu,p.chave,n_find,i.next.fd);}
 			
 		}
 
 		else
 		{
 			opt="FND";//CONTINUA O PROCESSO DE PROCURA
-			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){auxUDP=mensagem_udp(opt,i.atalho,p,fbits2,k,n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {auxTCP=mensagem_tcp(opt,i.next,p,fbits2,k,n_find,i.next.fd);}
+			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){auxUDP=mensagem_udp(opt,i.atalho,p,k,n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
+			else {auxTCP=mensagem_tcp(opt,i.next,p,k,n_find,i.next.fd);}
 		}
 		
 		if(strcmp(auxUDP,"ERRO")==0)//ERRO DE COMUNICAÇÃO POR UDP
 		{
 			printf("Corda quebrada, continuando pesquisa pelo sucessor");
 			i=interface(i,"d");	
-			if (strcmp(opt,"FND")==0)auxTCP=mensagem_tcp(opt,i.next,p,fbits2,k,n_find,i.next.fd);
-			else auxTCP=mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,n_find,i.next.fd);
+			if (strcmp(opt,"FND")==0)auxTCP=mensagem_tcp(opt,i.next,p,k,n_find,i.next.fd);
+			else auxTCP=mensagem_tcp(opt,i.next,i.eu,p.chave,n_find,i.next.fd);
 		}
 		if(auxTCP==-1)//ERRO DE COMUNICAÇÃO POR TCP
 		{
@@ -225,7 +219,7 @@ anel sub_processo(anel i, char buffer[])
 					 
 				}while(strncmp("ACK",buffer,3)!=0);
 			}
-			else printf("\nChave %d: Nó %d(%s : %s) \n \n Interface do usuario, escreva um comando:(-h para ajuda):\n",i.k[n_find],p.chave, p.ip,p.porto);//PRINTF DO FIND
+			else printf("\nChave %d: Nó %d(%s : %s) \n \nInterface do usuario, escreva um comando:(-h para ajuda):\n",i.k[n_find],p.chave, p.ip,p.porto);//PRINTF DO FIND
 			fflush(stdout);
 			if(i.n_find<99)i.n_find++;//MUDA O NUMERO DE CHAMADA
 			else {i.n_find=0;memset(i.k, -1, sizeof(i.k));}//REINICIALIZA FLAG
@@ -237,8 +231,8 @@ anel sub_processo(anel i, char buffer[])
 		else//PROCURA O NO QUE INICIALIZOU O FIND
 		{
 			
-			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){auxUDP=mensagem_udp(opt,i.atalho,p,fbits2,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
-			else {auxTCP=mensagem_tcp(opt,i.next,p,fbits2,k,n_find,i.next.fd);}
+			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){auxUDP=mensagem_udp(opt,i.atalho,p,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
+			else {auxTCP=mensagem_tcp(opt,i.next,p,k,n_find,i.next.fd);}
 			
 		}
 		
@@ -246,7 +240,7 @@ anel sub_processo(anel i, char buffer[])
 		{
 			printf("\nCorda quebrada, continuando pesquisa pelo sucessor\n");
 			i=interface(i,"d");	
-			auxTCP=mensagem_tcp(opt,i.next,p,fbits2,k,n_find,i.next.fd);
+			auxTCP=mensagem_tcp(opt,i.next,p,k,n_find,i.next.fd);
 		}
 		if(auxTCP==-1)//ERRO DE COMUNICAÇÃO DE TCP
 		{
@@ -264,7 +258,6 @@ anel sub_processo(anel i, char buffer[])
 		k=p.chave;
 		
 		//PROCESSO DE PROCURA
-		fbits2=fbits;
 		n_find=i.n_find;
 		i.k[n_find]=-1;
 		p=i.eu;

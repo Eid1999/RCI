@@ -2,12 +2,12 @@
 #include "Anel.h"
 
 
-char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
+char *mensagem_udp(char *opt, no dest, no envio,int k, int n_find)
 {
 	struct addrinfo hints,*res;
 	int fd,errcode, j=0;
 	ssize_t n;
-	char ptr[nbits];
+	char ptr[50];
 	static char buffer [50];
 	struct sockaddr addr;
 	socklen_t addrlen;
@@ -23,11 +23,11 @@ char *mensagem_udp(char *opt, no dest, no envio,int nbits,int k, int n_find)
 	
 	
 	//CRIA STRING DE ENVIO
-	if(n_find!=-1)snprintf(ptr,nbits,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
-	else snprintf(ptr,nbits,"%s %d\n",opt,envio.chave);
+	if(n_find!=-1)sprintf(ptr,"%s %d %d %d %s %s\n",opt,k,n_find,envio.chave,envio.ip,envio.porto);
+	else sprintf(ptr,"%s %d\n",opt,envio.chave);
 	NOACK:
 	//ENVIA STRING
-	if(nbits!=0)n=sendto(fd,ptr,nbits,0,res->ai_addr,res->ai_addrlen);
+	n=sendto(fd,ptr,strlen(ptr)+1,0,res->ai_addr,res->ai_addrlen);
 	if(n==-1)/*error*/return "ERRO";
 	
        strcpy(buffer,ACK(0,fd));//ESPERA ACK

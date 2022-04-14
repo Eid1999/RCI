@@ -8,7 +8,6 @@ anel interface (anel i, char str[]){
        int j=0;
    	 char *opt;
    	 no p;
-   	 int fbits,pbits,lbits;
    	 int quit=0;
    	 static char buffer [50];
    	 int auxTCP;
@@ -44,14 +43,6 @@ anel interface (anel i, char str[]){
 		j++;
 	 }
 	 
-	 
-	 
-	 //CALCULA TAMANHO DE MENSAGEM QUE SERA ENVIADA
-	fbits=(strlen(opt)+strlen(i.eu.ip)+strlen(i.eu.porto)+16);
-	pbits=(strlen(opt)+strlen(i.eu.ip)+strlen(i.eu.porto)+10);
-	if(i.next.ip!=NULL){
-	lbits=(strlen(opt)+strlen(i.prec.ip)+strlen(i.prec.porto)+10);}
-	
 	
 	//COMANDO NEW
 	if(strcmp(opt,"n")==0){
@@ -77,13 +68,13 @@ anel interface (anel i, char str[]){
 		
 		//ENVIA MENSAGEM
 		opt="FND";
-		if(i.atalho.ip!=NULL && d(i.atalho.chave,p.chave)<d(i.next.chave,p.chave)){auxUDP=mensagem_udp(opt,i.atalho,i.eu,fbits,p.chave,i.n_find);}//PROCURA POR ATALHO
-		else {auxTCP=mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);}//PROCURA PELO SUCESSOR
+		if(i.atalho.ip!=NULL && d(i.atalho.chave,p.chave)<d(i.next.chave,p.chave)){auxUDP=mensagem_udp(opt,i.atalho,i.eu,p.chave,i.n_find);}//PROCURA POR ATALHO
+		else {auxTCP=mensagem_tcp(opt,i.next,i.eu,p.chave,i.n_find,i.next.fd);}//PROCURA PELO SUCESSOR
 		if(auxUDP==NULL)//ERRO NA COMUNICAÇÃO DE UDP
 		{
 			printf("\nCorda Quebrada, continuando pesquisa pelo sucessor\n");
 			i=interface(i,"d");	
-			auxTCP=mensagem_tcp(opt,i.next,i.eu,fbits,p.chave,i.n_find,i.next.fd);
+			auxTCP=mensagem_tcp(opt,i.next,i.eu,p.chave,i.n_find,i.next.fd);
 		}
 		if(auxTCP==-1)//ERRO NA COMUNICAÇÃO DE TCP
 		{
@@ -104,7 +95,7 @@ anel interface (anel i, char str[]){
 		if(strcmp(p.ip,i.eu.ip)==0&&strcmp(p.porto,i.eu.porto)==0){printf("\nES TU\n");return i;}//ES TU
 		//ENVIA MENSAGEM
 		opt="EFND";
-		strcpy(buffer,mensagem_udp(opt,p,i.eu,8,p.chave,-1));
+		strcpy(buffer,mensagem_udp(opt,p,i.eu,p.chave,-1));
 		if(strcmp(buffer,"ERRO")==0){printf("\nNó invalido, tente novamente\n");return i;}
 		i=interface(i,buffer);//INICIA O PROCESSO PENTRY
 	}
@@ -129,7 +120,7 @@ anel interface (anel i, char str[]){
 		
 		//ENVIA MENSAGEM
 		opt="SELF";
-		i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,pbits,-1,0,i.prec.fd);//MENSAGEM COM AS SUAS INFORMAÇOES AO SEU NOVO PRECESSOR
+		i.prec.fd=mensagem_tcp(opt,i.prec,i.eu,-1,0,i.prec.fd);//MENSAGEM COM AS SUAS INFORMAÇOES AO SEU NOVO PRECESSOR
 		if(i.prec.fd==-1){printf("\nNó invalido, tente novamente\n");i=ERRO(i);}
 		return i;
 		     
@@ -176,7 +167,7 @@ anel interface (anel i, char str[]){
 	else if(strcmp(opt,"l")==0){
 		leave://PARTE DO EXIT
 		opt="PRED";
-		if(i.next.ip!=NULL)mensagem_tcp(opt,i.next,i.prec,lbits,-1,0,i.next.fd);//AVISA O SUCESSOR DAS INFORMAÇOES DO PRECESSOR
+		if(i.next.ip!=NULL)mensagem_tcp(opt,i.next,i.prec,-1,0,i.next.fd);//AVISA O SUCESSOR DAS INFORMAÇOES DO PRECESSOR
 		
 		
 		//LIMPA INFORMAÇOES
