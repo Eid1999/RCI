@@ -55,9 +55,9 @@ anel sub_processo(anel i, char buffer[]);//PROCESSO INTERNOS(buffer-mensagem rec
 
 anel interface(anel i,char str[]);//INTEFACE DO USUARIO(comando recebido)
 
-int mensagem_tcp(char *opt, no dest, no envio,int k, int n_find,int fd);//MESSAGEM TCP(opt-opçao (SELF,PRED),dest-destino da mensagem,envio-de onde vem o envio,nbits-tamanho da mensagem,k-chave procurada,n_find-numero da pesquiça )
+int mensagem_tcp(char *opt, no dest, no envio,int k, int n_find,int fd);//MESSAGEM TCP(opt-opçao (SELF,PRED),dest-destino da mensagem,envio-de onde vem o envio,k-chave procurada,n_find-numero da pesquiça )
 
-char *mensagem_udp(char *opt, no dest, no envio,int k, int n_find);//MENSAGEM UDP(opt-opçao (SELF,PRED),dest-destino da mensagem,envio-de onde vem o envio,nbits-tamanho da mensagem,k-chave procurada,n_find-numero da pesquiça )
+char *mensagem_udp(char *opt, no dest, no envio,int k, int n_find);//MENSAGEM UDP(opt-opçao (SELF,PRED),dest-destino da mensagem,envio-de onde vem o envio,k-chave procurada,n_find-numero da pesquiça )
 
 int d(int d1,int d2);//CALCULAR A DISTANCIA(d2-d1)mod
 
