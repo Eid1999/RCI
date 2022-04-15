@@ -167,7 +167,7 @@ anel sub_processo(anel i, char buffer[])
 			opt="RSP";//INICIA PROCESSO DE RESPOSTA
 			if(p.chave==i.eu.chave){goto RSP;}//BENTRY, SE O NO QUE FOI CHAMADO FOR O MAIS PROXIMO
 			
-			if(i.atalho.ip!=NULL && d(i.atalho.chave,p.chave)<d(i.next.chave,p.chave)){auxUDP=mensagem_udp(opt,i.atalho,i.eu,p.chave,n_find);}//PROCURA O MENOR CAMINHO PARA A PROCURA, ATALHO OU SUCESSOR
+			if(i.atalho.ip!=NULL && d(i.atalho.chave,p.chave)<d(i.next.chave,p.chave)){auxUDP=mensagem_udp(opt,i.atalho,i.eu,p.chave,n_find,i.fdUDP);}//PROCURA O MENOR CAMINHO PARA A PROCURA, ATALHO OU SUCESSOR
 			else {auxTCP=mensagem_tcp(opt,i.next,i.eu,p.chave,n_find,i.next.fd);}
 			
 		}
@@ -175,7 +175,7 @@ anel sub_processo(anel i, char buffer[])
 		else
 		{
 			opt="FND";//CONTINUA O PROCESSO DE PROCURA
-			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){auxUDP=mensagem_udp(opt,i.atalho,p,k,n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
+			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){auxUDP=mensagem_udp(opt,i.atalho,p,k,n_find,i.fdUDP);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
 			else {auxTCP=mensagem_tcp(opt,i.next,p,k,n_find,i.next.fd);}
 		}
 		
@@ -234,7 +234,7 @@ anel sub_processo(anel i, char buffer[])
 		else//PROCURA O NO QUE INICIALIZOU O FIND
 		{
 			
-			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){auxUDP=mensagem_udp(opt,i.atalho,p,k,i.n_find);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
+			if(i.atalho.ip!=NULL && d(i.atalho.chave,k)<d(i.next.chave,k)){auxUDP=mensagem_udp(opt,i.atalho,p,k,i.n_find,i.fdUDP);}//PROCURA O MENOR CAMINHO, ENTRE ATALHO OU SUCESSOR
 			else {auxTCP=mensagem_tcp(opt,i.next,p,k,n_find,i.next.fd);}
 			
 		}

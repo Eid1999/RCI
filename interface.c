@@ -76,7 +76,7 @@ anel interface (anel i, char str[]){
 		
 		//ENVIA MENSAGEM
 		opt="FND";
-		if(i.atalho.ip!=NULL && d(i.atalho.chave,p.chave)<d(i.next.chave,p.chave)){auxUDP=mensagem_udp(opt,i.atalho,i.eu,p.chave,i.n_find);}//PROCURA POR ATALHO
+		if(i.atalho.ip!=NULL && d(i.atalho.chave,p.chave)<d(i.next.chave,p.chave)){auxUDP=mensagem_udp(opt,i.atalho,i.eu,p.chave,i.n_find,i.fdUDP);}//PROCURA POR ATALHO
 		else {auxTCP=mensagem_tcp(opt,i.next,i.eu,p.chave,i.n_find,i.next.fd);}//PROCURA PELO SUCESSOR
 		
 		if(auxUDP==NULL)//ERRO NA COMUNICAÇÃO DE UDP
@@ -105,7 +105,7 @@ anel interface (anel i, char str[]){
 		
 		//ENVIA MENSAGEM
 		opt="EFND";
-		strcpy(buffer,mensagem_udp(opt,p,i.eu,p.chave,-1));
+		strcpy(buffer,mensagem_udp(opt,p,i.eu,p.chave,-1,-1));
 		
 		if(strcmp(buffer,"ERRO")==0){printf("\nNó invalido, tente novamente\n");return i;}//COMUNICAÇÃO COM NO NÃO FOI POSSIVEL
 		i=interface(i,buffer);//INICIA O PROCESSO PENTRY

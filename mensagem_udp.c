@@ -2,19 +2,19 @@
 #include "Anel.h"
 
 
-char *mensagem_udp(char *opt, no dest, no envio,int k, int n_find)
+char *mensagem_udp(char *opt, no dest, no envio,int k, int n_find,int fd)
 {
 	struct addrinfo hints,*res;
-	int fd,errcode, j=0;
+	int errcode, j=0;
 	ssize_t n;
+	int aux=fd;
 	char ptr[50];
 	static char buffer [50];
 	struct sockaddr addr;
 	socklen_t addrlen;
 	
 	//CRIA SOCKET DO CLIENTE
-	fd=socket(AF_INET,SOCK_DGRAM,0);//UDP socket
-	if(fd==-1)/*error*/exit(31);
+	if(fd==-1){fd=socket(AF_INET,SOCK_DGRAM,0);if(fd==-1)/*error*/return "ERRO";}
 	memset(&hints,0,sizeof hints);
 	hints.ai_family=AF_INET;//IPv4
 	hints.ai_socktype=SOCK_DGRAM;//UDP socket
@@ -44,7 +44,7 @@ char *mensagem_udp(char *opt, no dest, no envio,int k, int n_find)
 		
 	}
 	freeaddrinfo(res);
-	close(fd);
+	if(aux==-1)close(fd);
 	return buffer;
 	
 }
